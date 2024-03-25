@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "react-native-loading-spinner-overlay": "^3.0.1"
+  }
+}

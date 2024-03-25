@@ -39,11 +39,11 @@ const Login = () => {
             style={styles.inputField}
         />
 
-        <TouchableOpacity onPress={onSignInPress} style={styles.button}>
-            <Link href={'/(tabs)'}>
-                <Text style={{ color: '#fff' }}>Sign in</Text>
-            </Link>
-        </TouchableOpacity>
+        <Link href={'/(tabs)'} style={styles.button}>
+            <TouchableOpacity onPress={onSignInPress}>
+                <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
+            </TouchableOpacity>
+        </Link>
         <TouchableOpacity onPress={onSignUpPress} style={styles.button}>
             <Text style={{ color: '#fff' }}>Create Account</Text>
         </TouchableOpacity>

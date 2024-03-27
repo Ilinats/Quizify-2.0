@@ -4,41 +4,20 @@ import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link } from 'expo-router';
 import { globalVariable2 } from '../folderIndex';
-
-// Custom component for the folder
-const FolderComponent = ({ name1, onPress }) => {
-  var temp = name1;
-  temp = temp.slice(0, -1);
-  return (
-    <Link href="/folderScreen" asChild>
-    <TouchableOpacity onPress={onPress} style={styles.folderContainer}>
-      <FontAwesome
-        name="folder"
-        color={'#ff6262'}
-        size={40} // Increase icon size
-        style={{ marginRight: 15, opacity: 0.8}}
-      />
-      <Text style={styles.folderName}>{temp}</Text>
-    </TouchableOpacity>
-    </Link>
-  );
-};
+import FolderComponent from '@/components/FolderComponent';
 
 export default function TabTwoScreen() {
-  // Function to handle press on folder
   const handleFolderPress = (folderName) => {
     console.log('Folder pressed:', folderName);
     globalVariable2.Index = Number(folderName[folderName.length - 1]);
-    // Add your logic here
   };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        {/* Render five folder components */}
-        <FolderComponent name1="16th March5" onPress={() => handleFolderPress('Folder 5')} />
-        <FolderComponent name1="15th March1" onPress={() => handleFolderPress('Folder 1')} />
-        <FolderComponent name1="14th March2" onPress={() => handleFolderPress('Folder 2')} />
+        <FolderComponent name="16th March5" onPress={() => handleFolderPress('Folder 5')} />
+        <FolderComponent name="15th March1" onPress={() => handleFolderPress('Folder 1')} />
+        <FolderComponent name="14th March2" onPress={() => handleFolderPress('Folder 2')} />
       </ScrollView>
       <Image style={styles.curve} source={require('../../assets/images/curve.png')} />
     </View>

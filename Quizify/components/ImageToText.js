@@ -3,7 +3,7 @@ import { StyleSheet, Text, Image, SafeAreaView, TouchableOpacity } from "react-n
 import { StatusBar } from "expo-status-bar"; 
 import { useState } from "react"; 
 import * as ImagePicker from "expo-image-picker";  
-/*import ChatGPT from '@/src/chat';*/
+import ChatGPT from '../src/chat';
 
 
 export default function GetText() { 
@@ -45,7 +45,7 @@ export default function GetText() {
 		let myHeaders = new Headers(); 
 		myHeaders.append( 
 			"apikey", 
-			"FEmvQr5uj99ZUvk3essuYb6P5lLLBS20"
+			"###"
 		); 
 		myHeaders.append( 
 			"Content-Type", 
@@ -102,7 +102,7 @@ export default function GetText() {
                 {extractedText} 
             </Text> 
             <StatusBar style="auto" />
-            <ChatGPT textFromImage={extractedText}/> 
+            <ChatGPT textFromImage={extractedText}/>
 		</SafeAreaView> 
 	); 
 } 

@@ -2,6 +2,7 @@ import { useState} from 'react'
 import {View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Stack, Link } from 'expo-router'
+import {globalVariable} from '../../try'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -9,7 +10,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false)
 
     const onSignInPress = () => {
-        
+        globalVariable.Session = true;
     }
 
     const onSignUpPress = () => {

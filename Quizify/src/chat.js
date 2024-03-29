@@ -25,7 +25,7 @@ const ChatGPT = ({textFromImage}) => {
               },
               {
                 role: "user",
-                content: "Generate two questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be calle 'answer')." + textFromImage
+                content: "Generate two questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be calle 'answer')." + textFromImage //malko da se opravi
               }
             ],
             max_tokens: 400,

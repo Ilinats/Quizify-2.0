@@ -102,7 +102,7 @@ export default function GetText() {
                 {extractedText} 
             </Text> 
             <StatusBar style="auto" />
-            {/* <ChatGPT textFromImage={extractedText}/> */}
+            <ChatGPT textFromImage={extractedText}/> 
 		</SafeAreaView> 
 	); 
 } 

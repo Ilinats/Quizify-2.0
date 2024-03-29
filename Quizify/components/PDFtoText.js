@@ -37,7 +37,6 @@ export default function TextFromPdf() {
 
   return (
     <View style={styles.container}>
-     {/* <Button title="Upload PDF file" onPress={handleFileUpload} />*/}
         <TouchableOpacity onPress={handleFileUpload} style={styles.button}>
         	<Text style={{ color: '#fff' }}>Upload PDF file</Text>
         </TouchableOpacity>

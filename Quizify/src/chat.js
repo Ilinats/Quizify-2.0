@@ -38,8 +38,12 @@ const ChatGPT = ({textFromImage}) => {
           }
       }).then(response => {
         console.log(response);
-          questions = response;
-          globalVariable.GPTOutput = response.data.choices[0].message.content;
+          // questions = response;
+          // globalVariable.GPTOutput = response.data.choices[0].message.content;
+          const content = response.data.choices[0].message.content;
+          const jsonString = content.replace(/```json\s*([\s\S]*?)\s*```/g, '$1');
+          const jsonData = JSON.parse(jsonString);
+          globalVariable.GPTOutput = jsonData;
           console.log(globalVariable.GPTOutput);
           setAnswerLocked(false)
       })

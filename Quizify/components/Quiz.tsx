@@ -17,6 +17,7 @@ const QuizComponent = () => {
     const resetQuiz = () => {
         setScore(0);
         setQuestionIndex(0);
+        setAllPressed([]);
     }
 
     const handlePress = () => {

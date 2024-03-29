@@ -4,6 +4,7 @@ import { Link, Redirect } from 'expo-router';
 import {globalVariable} from '../try';
 
 const index = () => {
+  console.log(globalVariable.Session);
   return (
     <View>
     { globalVariable.Session ? <Redirect href={'/(tabs)'} /> : <Redirect href={'/(auth)/sign-in'} /> }

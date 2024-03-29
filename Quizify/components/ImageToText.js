@@ -4,12 +4,16 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react"; 
 import * as ImagePicker from "expo-image-picker";  
 import ChatGPT from '../src/chat';
-
+import { useEffect } from 'react';
 
 export default function GetText() { 
 	const [image, setImage] = useState(null); 
 	
 	const [extractedText, setExtractedText] = useState("");
+
+	useEffect(() => {
+		setExtractedText("");
+	}, []);
 
 	const pickImageGallery = async () => { 
 		let result = 

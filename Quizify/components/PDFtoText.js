@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { PDFDocument, PDFText } from 'react-native-pdf-lib';
 
@@ -13,22 +13,24 @@ export default function TextFromPdf() {
       });
 
       if (document.type === 'success') {
-        const pdfPath = document.uri;
+        console.log('3');
+        const pdfUri = document.uri;
 
-        // Extract text from PDF
-        PDFDocument.load(pdfPath)
-          .then((doc) => {
-            let extractedText = '';
-            for (let i = 0; i < doc.pages.length; i++) {
-              const page = doc.pages[i];
-              extractedText += PDFText.getText(page);
-            }
-            setText(extractedText);
-            console.log('2');
-          })
-          .catch((error) => {
-            console.error('Error extracting text:', error);
-          });
+        try {
+          const doc = await PDFDocument.load(pdfUri);
+          let extractedText = '';
+
+          for (let i = 0; i < doc.pages.length; i++) {
+            const page = doc.pages[i];
+            const pageText = await PDFText.getText(page);
+            extractedText += pageText;
+          }
+          console.log('2');
+
+          setText(extractedText);
+        } catch (error) {
+          console.error('Error extracting text:', error);
+        }
       }
     } catch (err) {
       console.error('Error while picking the file:', err);
@@ -37,42 +39,27 @@ export default function TextFromPdf() {
 
   return (
     <View style={styles.container}>
-        <TouchableOpacity onPress={handleFileUpload} style={styles.button}>
-        	<Text style={{ color: '#fff' }}>Upload PDF file</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={handleFileUpload} style={styles.button}>
+        <Text style={{ color: '#fff' }}>Upload PDF file</Text>
+      </TouchableOpacity>
       {text ? (
         <View style={styles.textContainer}>
-            <Text>{text}</Text>
+          <Text>{text}</Text>
         </View>
       ) : null}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({ 
-    container: { 
-        display: "flex", 
-        alignContent: "center", 
-        alignItems: "center", 
-        justifyContent: "space-evenly", 
-        backgroundColor: "#fff", 
-        height: "100%", 
-    }, 
-	heading2: { 
-		fontSize: 24,  
-		marginBottom: 8, 
-		color: "#ff6262", 
-		textAlign: "center", 
-		fontWeight: 'bold',
-		marginBottom: 55
-	},
-	text1: { 
-		fontSize: 16, 
-		marginBottom: 10, 
-		color: "black", 
-	},
-	button: {
-		marginTop: -65,
+  container: { 
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  button: {
+		marginTop: -685,
 		marginVertical: -10,
 		marginHorizontal: 100,
 		alignItems: 'center',
@@ -80,9 +67,15 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderRadius: 1000,
 		width: 300
-	}
+  },
+  textContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    width: '80%',
+    maxHeight: '50%',
+    overflow: 'scroll',
+  },
 });
-
-
-
-

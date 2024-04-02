@@ -1,19 +1,46 @@
 import { useState} from 'react'
-import {View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
+import {AppState,Alert,View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Stack, Link } from 'expo-router'
+import { supabase } from '../supabase'
 
-const Login = () => {
+AppState.addEventListener('change', (state) => {
+    if (state === 'active') {
+      supabase.auth.startAutoRefresh()
+    } else {
+      supabase.auth.stopAutoRefresh()
+    }
+  })
+
+const Auth = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-
-    const onSignInPress = () => {
-        
+  
+    async function signInWithEmail() {
+      setLoading(true)
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      })
+  
+      if (error) Alert.alert(error.message)
+      setLoading(false)
     }
-
-    const onSignUpPress = () => {
-            
+  
+    async function signUpWithEmail() {
+      setLoading(true)
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      })
+  
+      if (error) Alert.alert(error.message)
+      if (!session) Alert.alert('no session')
+      setLoading(false)
     }
 
     return (
@@ -40,11 +67,11 @@ const Login = () => {
         />
 
         <Link href={'/(tabs)'} style={styles.button} asChild>
-            <TouchableOpacity onPress={onSignInPress}>
+            <TouchableOpacity onPress={() => signInWithEmail()}>
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
             </TouchableOpacity>
         </Link>
-        <TouchableOpacity onPress={onSignUpPress} style={styles.button}>
+        <TouchableOpacity onPress={() => signUpWithEmail()}  style={styles.button}>
             <Text style={{ color: '#fff' }}>Create Account</Text>
         </TouchableOpacity>
         </View>
@@ -111,4 +138,4 @@ const Login = () => {
 
 
 
-export default Login;
+export default Auth;

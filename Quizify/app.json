@@ -34,6 +34,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    }  
   }
 }

@@ -40,7 +40,7 @@ const Login = () => {
             style={styles.inputField}
         />
 
-        <Link href={'/(tabs)'} style={styles.button} asChild>
+        <Link href={'../(tabs)'} style={styles.button} asChild>
             <TouchableOpacity onPress={onSignInPress}>
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
             </TouchableOpacity>

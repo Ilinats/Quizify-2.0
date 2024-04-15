@@ -5,11 +5,16 @@ import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";  
 import ChatGPT from '../src/chat';
 import { useEffect } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
+import { Buffer } from "buffer";
 
 export default function GetText() { 
 	const [image, setImage] = useState(null); 
-	
 	const [extractedText, setExtractedText] = useState("");
+	
+	const apiKey = '###';
+	const apiUrl = 'https://app.nanonets.com/api/v2/OCR/FullText';
 
 	useEffect(() => {
 		setExtractedText("");
@@ -49,7 +54,7 @@ export default function GetText() {
 		let myHeaders = new Headers(); 
 		myHeaders.append( 
 			"apikey", 
-			"FEmvQr5uj99ZUvk3essuYb6P5lLLBS20"
+			"###"
 		); 
 		myHeaders.append( 
 			"Content-Type", 
@@ -81,6 +86,47 @@ export default function GetText() {
 			.catch((error) => console.log("error", error)); 		
 	}; 
 
+	const pickPDF = async () => {
+		console.log('pickPDF');
+		try {
+			const document = await DocumentPicker.getDocumentAsync({
+			  type: 'application/pdf',
+			});
+
+			console.log('document: ', document);
+	  
+			if (document && !document.canceled) {
+				const pdfPath = document.assets[0].uri;
+
+			  console.log('pdfPath: ', pdfPath);
+
+				var data = new FormData();
+				data.append('file', {
+				uri: pdfPath,
+				name: 'test.pdf',
+				type: 'application/pdf',
+				});
+
+				axios({
+				method: "post",
+				url: apiUrl,
+				data: data,
+				headers: { "Content-Type": "multipart/form-data", 'Authorization': 'Basic ' + Buffer.from(apiKey + ":").toString('base64') },
+				})
+				.then(function (response) {
+					console.log("OK: ", response.data.results[0].page_data[0].raw_text);
+					var temp = extractedText + response.data.results[0].page_data[0].raw_text;
+					setExtractedText(temp);
+				})
+				.catch(function (response) {
+					console.log("Error: ", response);
+				});
+			}
+		} catch (err) {
+			console.error('Error while picking the file:', err);
+		}
+  	};
+
 	return ( 
 		<SafeAreaView style={styles.container}> 
 			<Text style={styles.heading2}> 
@@ -92,7 +138,10 @@ export default function GetText() {
 			<TouchableOpacity onPress={pickImageCamera} style={styles.button}>
         		<Text style={{ color: '#fff' }}>Take a photo</Text>
       		</TouchableOpacity>
-            {image && ( 
+			<TouchableOpacity onPress={pickPDF} style={styles.button}>
+        		<Text style={{ color: '#fff' }}>Upload PDF file</Text>
+     		</TouchableOpacity>
+            {/* {image && ( 
                 <Image 
                     source={{ uri: image }} 
                     style={{ 
@@ -101,7 +150,7 @@ export default function GetText() {
                         objectFit: "contain", 
                     }} 
                 /> 
-            )} 
+            )}  */}
             <Text style={styles.text1}> 
                 {extractedText} 
             </Text> 

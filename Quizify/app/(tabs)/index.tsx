@@ -7,7 +7,6 @@ export default function TabOneScreen() {
   return (
     <View style={styles.container}>
       <ImageToText/>
-      
     </View>
   );
 }

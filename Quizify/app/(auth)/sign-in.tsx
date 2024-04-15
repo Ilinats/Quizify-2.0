@@ -5,9 +5,9 @@ import { Stack, Link } from 'expo-router'
 import {globalVariable} from '../../try'
 
 const Login = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    //const [loading, setLoading] = useState(false)
 
     const onSignInPress = () => {
         globalVariable.Session = true;
@@ -45,9 +45,11 @@ const Login = () => {
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
             </TouchableOpacity>
         </Link>
-        <TouchableOpacity onPress={onSignUpPress} style={styles.button}>
-            <Text style={{ color: '#fff' }}>Create Account</Text>
-        </TouchableOpacity>
+        <Link href={'/(auth)/sign-up'} style={styles.button} asChild>
+            <TouchableOpacity onPress={onSignUpPress}>
+                <Text style={{ color: '#fff' }}>Create Account</Text>
+            </TouchableOpacity>
+        </Link>
         </View>
     )
     }

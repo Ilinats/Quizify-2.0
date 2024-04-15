@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { View } from '@/components/Themed';
 import ImageToText from '@/components/ImageToText';
-import PDFtoText from '@/components/PDFtoText';
 
 export default function TabOneScreen() {
   return (

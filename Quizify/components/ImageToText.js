@@ -12,6 +12,9 @@ import { Buffer } from "buffer";
 export default function GetText() { 
 	const [image, setImage] = useState(null); 
 	const [extractedText, setExtractedText] = useState("");
+	const [limit, setLimit] = useState(false);
+	const [counter, setCounter] = useState(0);
+	const [pdf, setPdf] = useState(false);
 	
 	const apiKey = '###';
 	const apiUrl = 'https://app.nanonets.com/api/v2/OCR/FullText';
@@ -20,7 +23,7 @@ export default function GetText() {
 		setExtractedText("");
 	}, []);
 
-	const pickImageGallery = async () => { 
+	const pickImageGallery = async () => {
 		let result = 
 			await ImagePicker.launchImageLibraryAsync({ 
 				mediaTypes: 
@@ -31,7 +34,10 @@ export default function GetText() {
 			}); 
 		if (!result.canceled) { 
 			performOCR(result.assets[0]); 
-
+			setCounter(counter + 1);
+			if(counter == 3){
+				setLimit(true);
+			}
 			setImage(result.assets[0].uri);  
 		} 
 	}; 
@@ -45,6 +51,10 @@ export default function GetText() {
 		}); 
 		if (!result.canceled) {  
 			performOCR(result.assets[0]); 
+			setCounter(counter + 1);
+			if(counter == 3){
+				setLimit(true);
+			}
 			setImage(result.assets[0].uri);  
 		} 
 	}; 
@@ -117,6 +127,7 @@ export default function GetText() {
 					console.log("OK: ", response.data.results[0].page_data[0].raw_text);
 					var temp = extractedText + response.data.results[0].page_data[0].raw_text;
 					setExtractedText(temp);
+					setPdf(true);
 				})
 				.catch(function (response) {
 					console.log("Error: ", response);
@@ -132,13 +143,13 @@ export default function GetText() {
 			<Text style={styles.heading2}> 
 				Quizify 
 			</Text> 
-			<TouchableOpacity onPress={pickImageGallery} style={styles.button}>
+			<TouchableOpacity onPress={pickImageGallery} style={styles.button} disabled={limit}>
         		<Text style={{ color: '#fff' }}>Pick an image from gallery</Text>
       		</TouchableOpacity>
-			<TouchableOpacity onPress={pickImageCamera} style={styles.button}>
+			<TouchableOpacity onPress={pickImageCamera} style={styles.button} disabled={limit}>
         		<Text style={{ color: '#fff' }}>Take a photo</Text>
       		</TouchableOpacity>
-			<TouchableOpacity onPress={pickPDF} style={styles.button}>
+			<TouchableOpacity onPress={pickPDF} style={styles.button} disabled={pdf}>
         		<Text style={{ color: '#fff' }}>Upload PDF file</Text>
      		</TouchableOpacity>
             {/* {image && ( 

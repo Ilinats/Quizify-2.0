@@ -12,6 +12,10 @@ import { Buffer } from "buffer";
 export default function GetText() { 
 	const [image, setImage] = useState(null); 
 	const [extractedText, setExtractedText] = useState("");
+	const [limit, setLimit] = useState(false);
+	const [counter, setCounter] = useState(0);
+	const [pdf, setPdf] = useState(false);
+	const [pdfCounter, setPdfCounter] = useState(0);
 	
 	const apiKey = '###';
 	const apiUrl = 'https://app.nanonets.com/api/v2/OCR/FullText';
@@ -20,33 +24,44 @@ export default function GetText() {
 		setExtractedText("");
 	}, []);
 
-	const pickImageGallery = async () => { 
-		let result = 
-			await ImagePicker.launchImageLibraryAsync({ 
-				mediaTypes: 
-					ImagePicker.MediaTypeOptions.Images, 
+	const pickImageGallery = async () => {
+		if(counter == 4) {
+			setLimit(true);
+			alert('You have reached the limit of allowed images');
+		} else {
+			let result = 
+				await ImagePicker.launchImageLibraryAsync({ 
+					mediaTypes: 
+						ImagePicker.MediaTypeOptions.Images, 
+					allowsEditing: true, 
+					base64: true, 
+					allowsMultipleSelection: false, 
+				}); 
+			if (!result.canceled) { 
+				performOCR(result.assets[0]); 
+				setCounter(counter + 1);
+				setImage(result.assets[0].uri);  
+			} 
+		}
+	}; 
+
+	const pickImageCamera = async () => { 
+		if(counter == 4) {
+			setLimit(true);
+			alert('You have reached the limit of allowed images');
+		} else {
+			let result = await ImagePicker.launchCameraAsync({ 
+				mediaTypes: ImagePicker.MediaTypeOptions.Images, 
 				allowsEditing: true, 
 				base64: true, 
 				allowsMultipleSelection: false, 
 			}); 
-		if (!result.canceled) { 
-			performOCR(result.assets[0]); 
-
-			setImage(result.assets[0].uri);  
-		} 
-	}; 
-
-	const pickImageCamera = async () => { 
-		let result = await ImagePicker.launchCameraAsync({ 
-			mediaTypes: ImagePicker.MediaTypeOptions.Images, 
-			allowsEditing: true, 
-			base64: true, 
-			allowsMultipleSelection: false, 
-		}); 
-		if (!result.canceled) {  
-			performOCR(result.assets[0]); 
-			setImage(result.assets[0].uri);  
-		} 
+			if (!result.canceled) {  
+				performOCR(result.assets[0]); 
+				setCounter(counter + 1);
+				setImage(result.assets[0].uri);  
+			} 
+		}
 	}; 
 
 	const performOCR = (file) => { 
@@ -88,42 +103,47 @@ export default function GetText() {
 
 	const pickPDF = async () => {
 		console.log('pickPDF');
-		try {
-			const document = await DocumentPicker.getDocumentAsync({
-			  type: 'application/pdf',
-			});
-
-			console.log('document: ', document);
-	  
-			if (document && !document.canceled) {
-				const pdfPath = document.assets[0].uri;
-
-			  console.log('pdfPath: ', pdfPath);
-
-				var data = new FormData();
-				data.append('file', {
-				uri: pdfPath,
-				name: 'test.pdf',
+		if(pdfCounter == 1) {
+			setPdf(true);
+			alert('You have reached the limit of allowed PDFs');
+		} else {
+			try {
+				const document = await DocumentPicker.getDocumentAsync({
 				type: 'application/pdf',
 				});
 
-				axios({
-				method: "post",
-				url: apiUrl,
-				data: data,
-				headers: { "Content-Type": "multipart/form-data", 'Authorization': 'Basic ' + Buffer.from(apiKey + ":").toString('base64') },
-				})
-				.then(function (response) {
-					console.log("OK: ", response.data.results[0].page_data[0].raw_text);
-					var temp = extractedText + response.data.results[0].page_data[0].raw_text;
-					setExtractedText(temp);
-				})
-				.catch(function (response) {
-					console.log("Error: ", response);
-				});
+				console.log('document: ', document);
+		
+				if (document && !document.canceled) {
+					const pdfPath = document.assets[0].uri;
+
+				console.log('pdfPath: ', pdfPath);
+
+					var data = new FormData();
+					data.append('file', {
+					uri: pdfPath,
+					name: 'test.pdf',
+					type: 'application/pdf',
+					});
+
+					axios({
+					method: "post",
+					url: apiUrl,
+					data: data,
+					headers: { "Content-Type": "multipart/form-data", 'Authorization': 'Basic ' + Buffer.from(apiKey + ":").toString('base64') },
+					})
+					.then(function (response) {
+						console.log("OK: ", response.data.results[0].page_data[0].raw_text);
+						var temp = extractedText + response.data.results[0].page_data[0].raw_text;
+						setExtractedText(temp);
+					})
+					.catch(function (response) {
+						console.log("Error: ", response);
+					});
+				}
+			} catch (err) {
+				console.error('Error while picking the file:', err);
 			}
-		} catch (err) {
-			console.error('Error while picking the file:', err);
 		}
   	};
 
@@ -132,13 +152,13 @@ export default function GetText() {
 			<Text style={styles.heading2}> 
 				Quizify 
 			</Text> 
-			<TouchableOpacity onPress={pickImageGallery} style={styles.button}>
+			<TouchableOpacity onPress={pickImageGallery} style={styles.button} disabled={limit}>
         		<Text style={{ color: '#fff' }}>Pick an image from gallery</Text>
       		</TouchableOpacity>
-			<TouchableOpacity onPress={pickImageCamera} style={styles.button}>
+			<TouchableOpacity onPress={pickImageCamera} style={styles.button} disabled={limit}>
         		<Text style={{ color: '#fff' }}>Take a photo</Text>
       		</TouchableOpacity>
-			<TouchableOpacity onPress={pickPDF} style={styles.button}>
+			<TouchableOpacity onPress={pickPDF} style={styles.button} disabled={pdf}>
         		<Text style={{ color: '#fff' }}>Upload PDF file</Text>
      		</TouchableOpacity>
             {/* {image && ( 

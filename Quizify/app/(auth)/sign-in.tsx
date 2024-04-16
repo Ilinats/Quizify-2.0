@@ -2,19 +2,27 @@ import { useState} from 'react'
 import {View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Stack, Link } from 'expo-router'
-import {globalVariable} from '../../try'
+import {supabase} from '../../lib/supabase'
 
 const Login = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const onSignInPress = () => {
-        globalVariable.Session = true;
+    async function onSignInPress() {
+        setLoading(true);
+        const {error} = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+
+        if(error)
+            alert(error.message)
+
+        setLoading(false);
     }
 
     const onSignUpPress = () => {
-            
     }
 
     return (
@@ -41,13 +49,15 @@ const Login = () => {
         />
 
         <Link href={'../(tabs)'} style={styles.button} asChild>
-            <TouchableOpacity onPress={onSignInPress}>
+            <TouchableOpacity onPress={onSignInPress} disabled={loading}>
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
             </TouchableOpacity>
         </Link>
-        <TouchableOpacity onPress={onSignUpPress} style={styles.button}>
-            <Text style={{ color: '#fff' }}>Create Account</Text>
-        </TouchableOpacity>
+        <Link href={'/(auth)/sign-up'} style={styles.button} asChild>
+            <TouchableOpacity onPress={onSignUpPress}>
+                <Text style={{ color: '#fff' }}>Create Account</Text>
+            </TouchableOpacity>
+        </Link>
         </View>
     )
     }

@@ -3,9 +3,11 @@ import { View } from '@/components/Themed';
 import ImageToText from '@/components/ImageToText';
 import { globalVariable } from '@/try';
 import GetText from '@/components/ImageToText';
+import { useAuth } from '../AuthProvider'
+import { Link, Redirect, Stack,Slot } from 'expo-router';
 
 export default function TabOneScreen() {
-  globalVariable.Session = true;
+
   return (
     <View style={styles.container}>
       <ImageToText/>

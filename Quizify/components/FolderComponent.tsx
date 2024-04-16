@@ -22,7 +22,7 @@ import {Link} from 'expo-router';
 
 const FolderComponent = ({ folderName, onPress }) =>{
   return (
-    <Link href="/folderScreen" asChild>
+    <Link href={{pathname:"/folderScreen", params:{folderName:folderName}}} asChild>
     <TouchableOpacity 
       style={styles.folderContainer} 
       onPress={onPress}

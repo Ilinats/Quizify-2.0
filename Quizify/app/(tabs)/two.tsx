@@ -54,9 +54,9 @@ export default function TabTwoScreen() {
 
   const handleFolderPress = async (folderName) => {
     try {
-      const path = `files/${folderName}/`;
+      const path = `${user!.id}/${folderName}/`;
       console.log(path);
-      const { data, error } = await supabase.storage.from(path).list(user!.id);
+      const { data, error } = await supabase.storage.from('files').list(user!.id);
       if (error) {
         console.error('Error fetching images:', error.message);
         return;

@@ -6,7 +6,6 @@ import {globalVariable} from '../try';
 
 const index = () => {
   
-
   return (
     <View>
 

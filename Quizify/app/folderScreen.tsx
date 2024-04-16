@@ -7,11 +7,13 @@ import { decode } from 'base64-arraybuffer'
 import { supabase } from './supabase'
 import { FileObject } from '@supabase/storage-js'
 import ImageItem from '../components/ImageItem'
+import { useLocalSearchParams } from 'expo-router';
 
 const FolderScreen = () => {
   const { user } = useAuth();
   const [files, setFiles] = useState<FileObject[]>([]);
 
+  const {folderName=""} = useLocalSearchParams();
   // const currentDate = new Date();
 
 	// const year = currentDate.getFullYear();
@@ -31,7 +33,8 @@ const FolderScreen = () => {
 
 
   const loadImages = async () => {
-    const { data } = await supabase.storage.from('files').list(user!.id);//the path hier to map it
+    const path = `${user!.id}/${folderName}/`;
+    const { data } = await supabase.storage.from('files').list(path);
     if (data) {
       setFiles(data);
       console.log(data)

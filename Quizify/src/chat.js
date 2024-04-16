@@ -5,7 +5,13 @@ import Button from '../components/Button';
 import {globalVariable} from '../globals';
 import {Link} from 'expo-router';
 
+import * as FileSystem from 'expo-file-system'
+import { decode } from 'base64-arraybuffer'
+import { supabase } from '../app/supabase'
+import { useAuth } from '../app/AuthProvider'
+
 const ChatGPT = ({textFromImage}) => {
+  const {user} = useAuth()
     const apiKey = '###'
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
     const [answerLocked, setAnswerLocked] = useState(true);
@@ -42,6 +48,9 @@ const ChatGPT = ({textFromImage}) => {
           globalVariable.GPTOutput = response.data.choices[0].message.content;
           console.log(globalVariable.GPTOutput);
           setAnswerLocked(false)
+          //json save globalVariable.GPTOutput
+          uploadJSONFile('gpt.json',globalVariable.GPTOutput)
+          
       })
       .catch(error => {
           console.log(error);
@@ -49,6 +58,37 @@ const ChatGPT = ({textFromImage}) => {
 
       console.log('bb');
   };
+
+  const uploadJSONFile = async (fileName, jsonData) => {
+    try {
+      // Convert JSON data to string
+      const jsonString = JSON.stringify(jsonData);
+  
+      // Upload JSON file to Supabase Storage
+
+      const currentDate = new Date();
+
+			const year = currentDate.getFullYear();
+			const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+			const day = String(currentDate.getDate()).padStart(2, '0');
+			const formattedDate = `${year}-${month}-${day}`;
+      const filePath = `${user.id}/${formattedDate}/test.json`;
+
+      const { data, error } = await supabase.storage.from('files').upload(filePath,jsonData,fileName );
+  
+      if (error) {
+        console.error('Error uploading JSON file:', error.message);
+        return null;
+      }
+  
+      console.log('JSON file uploaded successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('Error uploading JSON file:', error.message);
+      return null;
+    }
+  };
+  
 
   return (
     <View>

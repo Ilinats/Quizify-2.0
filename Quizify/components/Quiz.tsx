@@ -11,13 +11,10 @@ const QuizComponent = () => {
     const [pressedIndex, setPressedIndex] = useState(-1); // to highlight the correct answer after pressing
     const [answerLocked, setAnswerLocked] = useState(false); // to prevent answering while animation is ongoing
     const navigation = useNavigation();
-    var allPressed1: number[] = [];
-    var [allPressed, setAllPressed] = useState(allPressed1);
 
     const resetQuiz = () => {
         setScore(0);
         setQuestionIndex(0);
-        setAllPressed([]);
     }
 
     const handlePress = () => {
@@ -28,9 +25,8 @@ const QuizComponent = () => {
     const checkAnswer = (index: number) => {
         if (answerLocked) return; 
         setPressedIndex(index);
-        console.log(index);
-        allPressed.push(index);
-        console.log(allPressed);
+        globalVariable.GPTOutput.questions[questionIndex].userAnswer = index;
+        console.log(globalVariable.GPTOutput.questions[questionIndex].userAnswer);
         setColor(true);
 
         const isCorrect = GPTOutput().questions[questionIndex].answers[index].is_correct;
@@ -49,7 +45,6 @@ const QuizComponent = () => {
             setColor(false);
             setAnswerLocked(false);
             setPressedIndex(-1);
-            allPressed = [];
         }, 1000);
     }
 

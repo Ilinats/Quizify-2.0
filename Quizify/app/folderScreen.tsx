@@ -1,9 +1,7 @@
 import { View, StyleSheet, FlatList, Image, ScrollView } from 'react-native';
 import images from '../assets/folderImages/folder';
-import { globalVariable2 } from './folderIndex';
-
 import React, { useEffect, useState } from 'react'
-import {useAuth} from './(auth)/AuthProvider'
+import {useAuth} from './AuthProvider'
 import * as FileSystem from 'expo-file-system'
 import { decode } from 'base64-arraybuffer'
 import { supabase } from './supabase'
@@ -11,46 +9,36 @@ import { FileObject } from '@supabase/storage-js'
 import ImageItem from '../components/ImageItem'
 
 const FolderScreen = () => {
-
-  const folderIndex = globalVariable2.Index;
-  console.log(folderIndex);
-  // const filteredImages = images.filter(image => image.folder === folderIndex);
-
   const { user } = useAuth();
   const [files, setFiles] = useState<FileObject[]>([]);
 
+  // const currentDate = new Date();
+
+	// const year = currentDate.getFullYear();
+	// const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+	// const day = String(currentDate.getDate()).padStart(2, '0');
+	// const formattedDate = `${year}-${month}-${day}`;
+
+  // const folderName =formattedDate ; 
+
+  //const path = `files/${folderName}/`;
+
   useEffect(() => {
     if (!user) return;
-    // Load user images
+   
     loadImages();
   }, [user]);
 
+
   const loadImages = async () => {
-    const { data } = await supabase.storage.from('files').list(user!.id);
+    const { data } = await supabase.storage.from('files').list(user!.id);//the path hier to map it
     if (data) {
       setFiles(data);
+      console.log(data)
+      
     }
   };
 
-  // const onSelectImage = async () => {
-  //   const options: ImagePicker.ImagePickerOptions = {
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     allowsEditing: true,
-  //   };
-
-  //   const result = await ImagePicker.launchImageLibraryAsync(options);
-
-  //   // Save image if not cancelled
-  //   if (!result.canceled) {
-  //     const img = result.assets[0];
-  //     const base64 = await FileSystem.readAsStringAsync(img.uri, { encoding: 'base64' });
-  //     //console.log(base64);
-  //     const filePath = `${user!.id}/${new Date().getTime()}.${img.type === 'image' ? 'png' : 'mp4'}`;
-  //     const contentType = img.type === 'image' ? 'image/png' : 'video/mp4';
-  //     await supabase.storage.from('files').upload(filePath, decode(base64), { contentType });
-  //     await loadImages();//?
-  //   }
-  // };
   
   const onRemoveImage = async (item: FileObject, listIndex: number) => {
     supabase.storage.from('files').remove([`${user!.id}/${item.name}`]);

@@ -1,7 +1,6 @@
-import { supabase } from '../supabase'
 import React, { useState, useEffect, createContext, PropsWithChildren } from 'react'
 import { Session, User } from '@supabase/supabase-js'
-
+import { supabase } from './supabase'
 
 type AuthProps = {
   user: User | null
@@ -20,7 +19,7 @@ export function useAuth() {
 }
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<User | null>()
+  const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [initialized, setInitialized] = useState<boolean>(false)
 

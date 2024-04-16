@@ -1,6 +1,6 @@
 import { FileObject } from '@supabase/storage-js'
 import { Image, View, Text, TouchableOpacity } from 'react-native'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../app/supabase'
 import { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 

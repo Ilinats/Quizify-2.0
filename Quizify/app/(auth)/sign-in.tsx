@@ -3,6 +3,8 @@ import {AppState,Alert,View, TextInput, StyleSheet, Text, TouchableOpacity, Imag
 import React from 'react'
 import { Stack, Link } from 'expo-router'
 import { supabase } from '../supabase'
+import { useAuth } from '../AuthProvider'
+
 
 AppState.addEventListener('change', (state) => {
     if (state === 'active') {
@@ -12,11 +14,11 @@ AppState.addEventListener('change', (state) => {
     }
   })
 
-const Auth = () => {
+const SignIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-  
+
     async function signInWithEmail() {
       setLoading(true)
       const { error } = await supabase.auth.signInWithPassword({
@@ -31,15 +33,15 @@ const Auth = () => {
     async function signUpWithEmail() {
       setLoading(true)
       const {
-        data: { session },
-        error,
+       // data: { session },
+        error
       } = await supabase.auth.signUp({
         email: email,
         password: password,
       })
   
       if (error) Alert.alert(error.message)
-      if (!session) Alert.alert('no session')
+      //if (!session) Alert.alert('no session')
       setLoading(false)
     }
 
@@ -71,10 +73,12 @@ const Auth = () => {
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
             </TouchableOpacity>
         </Link>
+        
         <TouchableOpacity onPress={() => signUpWithEmail()}  style={styles.button}>
             <Text style={{ color: '#fff' }}>Create Account</Text>
         </TouchableOpacity>
         </View>
+
     )
     }
 
@@ -138,4 +142,4 @@ const Auth = () => {
 
 
 
-export default Auth;
+export default SignIn;

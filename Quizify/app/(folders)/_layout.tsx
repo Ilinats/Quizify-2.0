@@ -1,6 +1,7 @@
 import { Link, Stack } from 'expo-router';
 import { Pressable } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function MyStack() {
     return (
@@ -9,10 +10,10 @@ export default function MyStack() {
                 <Link href="/testDisplay" asChild>
                   <Pressable>
                     {({ pressed }) => (
-                      <FontAwesome
-                        name="info-circle"
+                      <AntDesign
+                        name="areachart"
                         size={25}
-                        color='blue'
+                        color='#fc7474'
                         style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                       />
                     )}

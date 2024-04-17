@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import  AntDesign  from '@expo/vector-icons/AntDesign';
 import {Link} from 'expo-router';
 
 const FolderComponent = ({ folderName, onPress }) =>{
@@ -10,8 +10,8 @@ const FolderComponent = ({ folderName, onPress }) =>{
       style={styles.folderContainer} 
       onPress={onPress}
     >
-      <FontAwesome
-        name="folder"
+      <AntDesign 
+        name="book"
         color={'#ff6262'}
         size={40}
         style={{ marginRight: 15, opacity: 0.8 }}

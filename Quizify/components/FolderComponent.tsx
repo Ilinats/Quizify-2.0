@@ -5,7 +5,7 @@ import {Link} from 'expo-router';
 
 const FolderComponent = ({ folderName, onPress }) =>{
   return (
-    <Link href={{pathname:"/folderScreen"}} asChild>
+    <Link href={{pathname:"/(folders)/folderScreen"}} asChild>
     <TouchableOpacity 
       style={styles.folderContainer} 
       onPress={onPress}
@@ -16,7 +16,7 @@ const FolderComponent = ({ folderName, onPress }) =>{
         size={40}
         style={{ marginRight: 15, opacity: 0.8 }}
       />
-      <Text style={styles.folderName}>{folderName}</Text>
+      <Text style={styles.folderName}>{'Quiz ' + folderName}</Text>
     </TouchableOpacity></Link>
   );
 }

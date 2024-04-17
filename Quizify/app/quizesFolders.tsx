@@ -63,7 +63,7 @@ export default function TabTwoScreen() {
                 {folders.map((folderName, index) => (
                <FolderComponent 
                  key={index} 
-                 folderName={folderName} 
+                 folderName={index + 1} 
                  onPress={() => handleFolderPress(folderName)}
                />
              ))}

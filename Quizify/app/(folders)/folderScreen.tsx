@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, FlatList, TouchableWithoutFeedback, Modal, ActivityIndicator } from 'react-native';
-import { useAuth } from '../providers/AuthProvider';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../../providers/AuthProvider';
+import { supabase } from '../../lib/supabase';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { Folder } from './folderIndex';
+import { Folder } from '../folderIndex';
 
 const FolderScreen = () => {
     const { user } = useAuth();
@@ -24,7 +24,6 @@ const FolderScreen = () => {
             setLoading(false);
         }
     }, [images]);
-
     const loadImages = async () => {
         console.log()
         const path = `${user?.id}/${Folder.FolderName}/${Folder.QuizName}`;

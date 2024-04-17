@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, FlatList, TouchableWithoutFeedback, Modal, Act
 import { useAuth } from '../providers/AuthProvider';
 import { supabase } from '../lib/supabase';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import { Folder } from './folderIndex';
 
 const FolderScreen = () => {
     const { user } = useAuth();
@@ -25,27 +26,26 @@ const FolderScreen = () => {
     }, [images]);
 
     const loadImages = async () => {
-        const path = `${user?.id}/`;
-        const { data } = await supabase.storage.from('files').list(path);
+        console.log()
+        const path = `${user?.id}/${Folder.FolderName}/${Folder.QuizName}`;
+        const { data, error } = await supabase.storage.from('files').list(path);
 
-        if (!data) return;
+        if (!data || error)
+            return;
 
-        const { data: extractedData } = await supabase.storage.from('files').list(`${user?.id}/${data[0].name}`);
-        sth = `${user?.id}/${data[0].name}`;
+        console.log('Data:', data);
+        sth = path;
 
-        if (!extractedData) return;
-
-        console.log('Extracted data:', extractedData);
-
-        for (let i = 0; i < extractedData.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             supabase.storage
                 .from('files')
-                .download(`${sth}/${extractedData[i].name}`)
-                .then(({ data }) => {
-                    if(extractedData[i].metadata.mimetype != 'image/png' && extractedData[i].metadata.mimetype != 'image/jpeg') 
+                .download(`${sth}/${data[i].name}`)
+                .then(({ data: extractedData }) => {
+                    console.log('Extracted data:', extractedData);
+                    if(data[i].metadata.mimetype != 'image/png' && data[i].metadata.mimetype != 'image/jpeg') 
                         return;
                     const fr = new FileReader();
-                    fr.readAsDataURL(data!);
+                    fr.readAsDataURL(extractedData!);
                     fr.onload = () => {
                         setImages(prevImages => [...prevImages, fr.result as string]);
                     };
@@ -53,8 +53,8 @@ const FolderScreen = () => {
         }
 
         try {
-            if (extractedData) {
-                setFiles(extractedData);
+            if (data) {
+                setFiles(data);
             }
         } catch (error) {
             console.error('Error loading images:', error);

@@ -8,7 +8,8 @@ export const globalVariable = {
               {"answer": " ", "is_correct": false},
               {"answer": " ", "is_correct": false},
               {"answer": " ", "is_correct": false}
-            ]
+            ],
+            userAnswer: 0,
           },
         ]
       }

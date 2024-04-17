@@ -1,3 +1,4 @@
-export const globalVariable2 = {
-    Index: 0,
+export const Folder = {
+    FolderName: ' ',
+    QuizName: ' ',
 };

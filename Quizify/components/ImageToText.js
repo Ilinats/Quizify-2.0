@@ -8,8 +8,8 @@ import { useEffect } from 'react';
 
 import * as FileSystem from 'expo-file-system'
 import { decode } from 'base64-arraybuffer'
-import { supabase } from '../app/supabase'
-import { useAuth } from '../app/AuthProvider'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../providers/AuthProvider'
 
 export default function GetText() {
 	const [image, setImage] = useState(null);

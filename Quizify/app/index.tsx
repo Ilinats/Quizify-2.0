@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator } from 'react-native';
 import React from 'react';
 import { Link, Redirect } from 'expo-router';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '../providers/AuthProvider';
 
 const index = () => {
   const {session} = useAuth();

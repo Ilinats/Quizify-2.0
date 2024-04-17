@@ -2,8 +2,8 @@ import { useState} from 'react'
 import {AppState,Alert,View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Stack, Link } from 'expo-router'
-import { supabase } from '../supabase'
-import { useAuth } from '../AuthProvider'
+import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../providers/AuthProvider'
 
 
 AppState.addEventListener('change', (state) => {

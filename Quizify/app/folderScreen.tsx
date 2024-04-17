@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, FlatList, TouchableWithoutFeedback, Modal, ActivityIndicator } from 'react-native';
-import { useAuth } from './AuthProvider';
-import { supabase } from './supabase';
+import { useAuth } from '../providers/AuthProvider';
+import { supabase } from '../lib/supabase';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 const FolderScreen = () => {

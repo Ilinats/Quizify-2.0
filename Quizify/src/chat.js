@@ -7,8 +7,8 @@ import { Link } from 'expo-router';
 
 import * as FileSystem from 'expo-file-system'
 import { decode } from 'base64-arraybuffer'
-import { supabase } from '../app/supabase'
-import { useAuth } from '../app/AuthProvider'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../providers/AuthProvider'
 
 const ChatGPT = ({ textFromImage }) => {
     const { user } = useAuth()

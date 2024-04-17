@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { AuthProvider,useAuth } from '../AuthProvider'
+import { AuthProvider,useAuth } from '../../providers/AuthProvider'
 import { useEffect } from 'react'
 
 const AuthLayout= ()=> {

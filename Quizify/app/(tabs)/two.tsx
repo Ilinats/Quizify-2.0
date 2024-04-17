@@ -6,9 +6,9 @@ import { Link } from 'expo-router';
 
 import FolderComponent from '@/components/FolderComponent';
 import { useState, useEffect } from 'react';
-import { useAuth } from '../AuthProvider';
+import { useAuth } from '../../providers/AuthProvider';
 import { FileObject } from '@supabase/storage-js'
-import { supabase } from '../supabase'
+import { supabase } from '../../lib/supabase'
 import { setFolderName, getFolderName } from '../../components/folderName';
 
 export default function TabTwoScreen() {

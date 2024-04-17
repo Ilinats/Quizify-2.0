@@ -3,21 +3,110 @@ import { StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link } from 'expo-router';
-import { globalVariable2 } from '../folderIndex';
+
 import FolderComponent from '@/components/FolderComponent';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../providers/AuthProvider';
+import { FileObject } from '@supabase/storage-js'
+import { supabase } from '../../lib/supabase'
+import { setFolderName, getFolderName } from '../../components/folderName';
 
 export default function TabTwoScreen() {
-  const handleFolderPress = (folderName) => {
-    console.log('Folder pressed:', folderName);
-    globalVariable2.Index = Number(folderName[folderName.length - 1]);
+  const { user } = useAuth();
+  const [folders, setFolders] = useState([]);
+
+  useEffect(() => {
+    loadFolders();
+  }, []);
+
+  const loadFolders = async () => {
+    try {
+      const { data, error } = await supabase.storage.from('files').list(user!.id);
+      if (error) {
+        console.error('Error fetching folders:', error.message);
+        return;
+      }
+      if (data) {
+        setFolders(data.map(item => item.name)); // Extracting folder names from data
+      }
+    } catch (error) {
+      console.error('Error loading folders:', error.message);
+    }
   };
+
+
+  // const handleFolderPress = async (folderName) => {
+  //   console.log('Folder pressed:', folderName)
+  //   try {
+  //     const path = `files/${folderName}/`;
+  //     const { data, error } = await supabase.storage.from(path).list(user!.id);
+  //     if (error) {
+  //       console.error('Error fetching images:', error.message);
+  //       return;
+  //     }
+  //     if (data) {
+  //       setFiles(data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error loading images:', error.message);
+  //   }
+  // };
+
+  const handleFolderPress = async (folderName) => {
+    try {
+      const path = `${user!.id}/${folderName}/`;
+      console.log(path);
+      const { data, error } = await supabase.storage.from('files').list(user!.id);
+      if (error) {
+        console.error('Error fetching images:', error.message);
+        return;
+      }
+      if (data) {
+        // Handle setting images here, depending on how you structure your app
+        console.log('Images fetched:', data);
+      }
+    } catch (error) {
+      console.error('Error loading images:', error.message);
+    }
+  };
+
+  
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <FolderComponent name="16th March5" onPress={() => handleFolderPress('Folder 5')} />
+        {/* <FolderComponent name="16th March5" onPress={() => loadFolders} />
         <FolderComponent name="15th March1" onPress={() => handleFolderPress('Folder 1')} />
         <FolderComponent name="14th March2" onPress={() => handleFolderPress('Folder 2')} />
+     
+
+        {files.map((item, index) => (
+                  <FolderComponent key={item.id} item={item} userId={user!.id}  />
+                ))} */}
+                {/* {folders.map((folderName, index) => (
+  
+                  <TouchableOpacity 
+        key={index} 
+        style={styles.folderContainer} 
+        onPress={() => handleFolderPress(folderName)}
+      >
+
+            <FontAwesome
+              name="folder"
+              color={'#ff6262'}
+              size={40}
+              style={{ marginRight: 15, opacity: 0.8 }}
+            />
+            <Text style={styles.folderName}>{folderName}</Text>
+          </TouchableOpacity>
+        ))} */}
+           {folders.map((folderName, index) => (
+          <FolderComponent 
+            key={index} 
+            folderName={folderName} 
+            onPress={() => handleFolderPress(folderName)} 
+          />
+        ))}
       </ScrollView>
       <Image style={styles.curve} source={require('../../assets/images/curve.png')} />
     </View>

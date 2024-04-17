@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
         color: "black",
     },
     button: {
-        marginTop: -65,
+        marginTop: -45,
         marginVertical: -10,
         marginHorizontal: 100,
         alignItems: 'center',

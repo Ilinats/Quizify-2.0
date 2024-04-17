@@ -11,7 +11,6 @@ export default function TestDisplay() {
     const [loading, setLoading] = useState<boolean>(true);
     const [quiz, setQuiz] = useState<any>(null);
     const [userAnswers, setUserAnswers] = useState<any>(null);
-    var answerIndex = -2; // da se opravi
 
     useEffect(() => {
         if (!user)
@@ -22,10 +21,9 @@ export default function TestDisplay() {
     useEffect(() => {
         if (quiz && userAnswers) {
             setLoading(false);
-            console.log('User answers:', userAnswers);
         }
     }, [quiz, userAnswers]);
-    
+
 
     const loadImages = async () => {
         console.log()
@@ -44,10 +42,10 @@ export default function TestDisplay() {
                     const reader = new FileReader();
                     reader.onload = function () {
                         const result = reader.result;
-                        if(data[i].metadata.mimetype === 'text/plain;charset=UTF-8') {
+                        if (data[i].metadata.mimetype === 'text/plain;charset=UTF-8') {
                             const parsedResult = JSON.parse(result); // Parse the JSON string
                             setQuiz(parsedResult);
-                        } else if(data[i].metadata.mimetype === 'text/plain') {
+                        } else if (data[i].metadata.mimetype === 'text/plain') {
                             setUserAnswers(typeof result === 'string' ? result.replaceAll(',', '') : result);
                         }
                     };
@@ -56,53 +54,36 @@ export default function TestDisplay() {
         }
     };
 
-    // const renderItem = ({ item }: { item: any }) => {
-    //     const userAnswerIndex = answerIndex;
-    //     answerIndex += 2; // Assuming each question has two answers
-    //     return (
-    //         <View style={styles.questionContainer}>
-    //             <View style={styles.bubble}>
-    //                 <Text style={styles.questionText}>{item.question}</Text>
-    //                 {item.answers.map((answer: any, index: number) => (
-    //                     <Text key={index} style={[styles.answerText, answer.is_correct ? styles.correctBubble : (userAnswers[userAnswerIndex] === index ? styles.wrongBubble : null)]}>
-    //                         {answer.answer}
-    //                     </Text>
-    //                 ))}
-    //             </View>
-    //         </View>
-    //     );
-    // };
-
     return (
         <View style={styles.container}>
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <ScrollView contentContainerStyle={styles.container}> 
-                {quiz.questions.map((data: any, questionIndex: any) => (
-    <View style={styles.questionContainer} key={questionIndex}>
-        <View style={styles.bubble}>
-            <Text style={styles.questionText}>{data.question}</Text>
-            {data.answers.map((answer: any, answerIndex: number) => {
-                const userAnswerIndex = parseInt(userAnswers[questionIndex]);
-                const isUserSelected = userAnswerIndex === answerIndex;
-                const isCorrect = answer.is_correct;
+                <ScrollView contentContainerStyle={styles.container}>
+                    {quiz.questions.map((data: any, questionIndex: any) => (
+                        <View style={styles.questionContainer} key={questionIndex}>
+                            <View style={styles.bubble}>
+                                <Text style={styles.questionText}>{data.question}</Text>
+                                {data.answers.map((answer: any, answerIndex: number) => {
+                                    const userAnswerIndex = parseInt(userAnswers[questionIndex]);
+                                    const isUserSelected = userAnswerIndex === answerIndex;
+                                    const isCorrect = answer.is_correct;
 
-                return (
-                    <Text
-                        key={answerIndex}
-                        style={[
-                            styles.answerText,
-                            isCorrect ? styles.correctBubble : (isUserSelected ? styles.wrongBubble : null),
-                        ]}
-                    >
-                        {answer.answer}
-                    </Text>
-                );
-            })}
-        </View>
-    </View>
-))}
+                                    return (
+                                        <Text
+                                            key={answerIndex}
+                                            style={[
+                                                styles.answerText,
+                                                isCorrect ? styles.correctBubble : (isUserSelected ? styles.wrongBubble : null),
+                                            ]}
+                                        >
+                                            {answer.answer}
+                                        </Text>
+                                    );
+                                })}
+                            </View>
+                        </View>
+                    ))}
 
                 </ScrollView>
             )}

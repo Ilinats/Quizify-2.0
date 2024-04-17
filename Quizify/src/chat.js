@@ -25,7 +25,7 @@ const ChatGPT = ({textFromImage}) => {
               },
               {
                 role: "user",
-                content: "Generate two questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be calle 'answer')." + textFromImage //malko da se opravi
+                content: "Generate between 2 and 15 questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be called 'answer') as well as a separate array var in 'questions' for user answer called 'userAnswer'." + textFromImage //malko da se opravi
               }
             ],
             max_tokens: 400,
@@ -38,8 +38,12 @@ const ChatGPT = ({textFromImage}) => {
           }
       }).then(response => {
         console.log(response);
-          questions = response;
-          globalVariable.GPTOutput = response.data.choices[0].message.content;
+          // questions = response;
+          // globalVariable.GPTOutput = response.data.choices[0].message.content;
+          const content = response.data.choices[0].message.content;
+          const jsonString = content.replace(/```json\s*([\s\S]*?)\s*```/g, '$1');
+          const jsonData = JSON.parse(jsonString);
+          globalVariable.GPTOutput = jsonData;
           console.log(globalVariable.GPTOutput);
           setAnswerLocked(false)
       })

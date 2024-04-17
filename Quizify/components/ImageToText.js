@@ -5,43 +5,63 @@ import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";  
 import ChatGPT from '../src/chat';
 import { useEffect } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
+import { Buffer } from "buffer";
 
 export default function GetText() { 
 	const [image, setImage] = useState(null); 
-	
 	const [extractedText, setExtractedText] = useState("");
+	const [limit, setLimit] = useState(false);
+	const [counter, setCounter] = useState(0);
+	const [pdf, setPdf] = useState(false);
+	const [pdfCounter, setPdfCounter] = useState(0);
+	
+	const apiKey = '###';
+	const apiUrl = 'https://app.nanonets.com/api/v2/OCR/FullText';
 
 	useEffect(() => {
 		setExtractedText("");
 	}, []);
 
-	const pickImageGallery = async () => { 
-		let result = 
-			await ImagePicker.launchImageLibraryAsync({ 
-				mediaTypes: 
-					ImagePicker.MediaTypeOptions.Images, 
+	const pickImageGallery = async () => {
+		if(counter == 4) {
+			setLimit(true);
+			alert('You have reached the limit of allowed images');
+		} else {
+			let result = 
+				await ImagePicker.launchImageLibraryAsync({ 
+					mediaTypes: 
+						ImagePicker.MediaTypeOptions.Images, 
+					allowsEditing: true, 
+					base64: true, 
+					allowsMultipleSelection: false, 
+				}); 
+			if (!result.canceled) { 
+				performOCR(result.assets[0]); 
+				setCounter(counter + 1);
+				setImage(result.assets[0].uri);  
+			} 
+		}
+	}; 
+
+	const pickImageCamera = async () => { 
+		if(counter == 4) {
+			setLimit(true);
+			alert('You have reached the limit of allowed images');
+		} else {
+			let result = await ImagePicker.launchCameraAsync({ 
+				mediaTypes: ImagePicker.MediaTypeOptions.Images, 
 				allowsEditing: true, 
 				base64: true, 
 				allowsMultipleSelection: false, 
 			}); 
-		if (!result.canceled) { 
-			performOCR(result.assets[0]); 
-
-			setImage(result.assets[0].uri);  
-		} 
-	}; 
-
-	const pickImageCamera = async () => { 
-		let result = await ImagePicker.launchCameraAsync({ 
-			mediaTypes: ImagePicker.MediaTypeOptions.Images, 
-			allowsEditing: true, 
-			base64: true, 
-			allowsMultipleSelection: false, 
-		}); 
-		if (!result.canceled) {  
-			performOCR(result.assets[0]); 
-			setImage(result.assets[0].uri);  
-		} 
+			if (!result.canceled) {  
+				performOCR(result.assets[0]); 
+				setCounter(counter + 1);
+				setImage(result.assets[0].uri);  
+			} 
+		}
 	}; 
 
 	const performOCR = (file) => { 
@@ -81,18 +101,67 @@ export default function GetText() {
 			.catch((error) => console.log("error", error)); 		
 	}; 
 
+	const pickPDF = async () => {
+		console.log('pickPDF');
+		if(pdfCounter == 1) {
+			setPdf(true);
+			alert('You have reached the limit of allowed PDFs');
+		} else {
+			try {
+				const document = await DocumentPicker.getDocumentAsync({
+				type: 'application/pdf',
+				});
+
+				console.log('document: ', document);
+		
+				if (document && !document.canceled) {
+					const pdfPath = document.assets[0].uri;
+
+				console.log('pdfPath: ', pdfPath);
+
+					var data = new FormData();
+					data.append('file', {
+					uri: pdfPath,
+					name: 'test.pdf',
+					type: 'application/pdf',
+					});
+
+					axios({
+					method: "post",
+					url: apiUrl,
+					data: data,
+					headers: { "Content-Type": "multipart/form-data", 'Authorization': 'Basic ' + Buffer.from(apiKey + ":").toString('base64') },
+					})
+					.then(function (response) {
+						console.log("OK: ", response.data.results[0].page_data[0].raw_text);
+						var temp = extractedText + response.data.results[0].page_data[0].raw_text;
+						setExtractedText(temp);
+					})
+					.catch(function (response) {
+						console.log("Error: ", response);
+					});
+				}
+			} catch (err) {
+				console.error('Error while picking the file:', err);
+			}
+		}
+  	};
+
 	return ( 
 		<SafeAreaView style={styles.container}> 
 			<Text style={styles.heading2}> 
 				Quizify 
 			</Text> 
-			<TouchableOpacity onPress={pickImageGallery} style={styles.button}>
+			<TouchableOpacity onPress={pickImageGallery} style={styles.button} disabled={limit}>
         		<Text style={{ color: '#fff' }}>Pick an image from gallery</Text>
       		</TouchableOpacity>
-			<TouchableOpacity onPress={pickImageCamera} style={styles.button}>
+			<TouchableOpacity onPress={pickImageCamera} style={styles.button} disabled={limit}>
         		<Text style={{ color: '#fff' }}>Take a photo</Text>
       		</TouchableOpacity>
-            {image && ( 
+			<TouchableOpacity onPress={pickPDF} style={styles.button} disabled={pdf}>
+        		<Text style={{ color: '#fff' }}>Upload PDF file</Text>
+     		</TouchableOpacity>
+            {/* {image && ( 
                 <Image 
                     source={{ uri: image }} 
                     style={{ 
@@ -101,7 +170,7 @@ export default function GetText() {
                         objectFit: "contain", 
                     }} 
                 /> 
-            )} 
+            )}  */}
             <Text style={styles.text1}> 
                 {extractedText} 
             </Text> 
@@ -117,13 +186,13 @@ const styles = StyleSheet.create({
         alignContent: "center", 
         alignItems: "center", 
         justifyContent: "space-evenly", 
-        backgroundColor: "#fff", 
+        backgroundColor: "#fdf1bc", 
         height: "100%", 
     }, 
 	heading2: { 
 		fontSize: 24,  
 		marginBottom: 8, 
-		color: "#ff6262", 
+		color: "#fc7474", 
 		textAlign: "center", 
 		fontWeight: 'bold',
 		marginBottom: 55
@@ -138,7 +207,7 @@ const styles = StyleSheet.create({
 		marginVertical: -10,
 		marginHorizontal: 100,
 		alignItems: 'center',
-		backgroundColor: '#ff6262',
+		backgroundColor: '#fc7474',
 		padding: 15,
 		borderRadius: 1000,
 		width: 300

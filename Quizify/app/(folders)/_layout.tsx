@@ -7,7 +7,7 @@ export default function MyStack() {
     return (
         <Stack screenOptions={{
             headerRight: () => (
-                <Link href="/testDisplay" asChild>
+                <Link href="/redirect" asChild>
                   <Pressable>
                     {({ pressed }) => (
                       <AntDesign
@@ -21,7 +21,7 @@ export default function MyStack() {
                 </Link>
               ),
         }} >
-        <Stack.Screen name="folderScreen"/>
+        <Stack.Screen name="folderScreen" options={{headerTitle: 'Library'}} />
         </Stack>
     );
 }

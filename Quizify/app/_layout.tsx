@@ -9,16 +9,13 @@ import { AuthProvider, useAuth } from '../providers/AuthProvider'
 import { useColorScheme } from '@/components/useColorScheme';
 
 export {
-    // Catch any errors thrown by the Layout component.
     ErrorBoundary,
 } from 'expo-router';
 
 export const unstable_settings = {
-    // Ensure that reloading on `/modal` keeps a back button present.
     initialRouteName: '(tabs)',
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -27,7 +24,6 @@ export default function RootLayout() {
         ...FontAwesome.font,
     });
 
-    // Expo Router uses Error Boundaries to catch errors in the navigation tree.
     useEffect(() => {
         if (error) throw error;
     }, [error]);
@@ -56,6 +52,8 @@ function RootLayoutNav() {
                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                     <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
                     <Stack.Screen name="(folders)" options={{headerShown: false}} />
+                    <Stack.Screen name="quizesFolders" options={{headerTitle: 'History'}} />
+                    <Stack.Screen name="(quiz)" options={{headerShown: false}} />
                 </Stack>
             </AuthProvider>
         </ThemeProvider>

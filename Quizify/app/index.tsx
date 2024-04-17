@@ -1,18 +1,14 @@
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import React from 'react';
-import { Link, Redirect, Stack,Slot } from 'expo-router';
-import {globalVariable} from '../try';
-
+import { Link, Redirect } from 'expo-router';
+import { useAuth } from './AuthProvider';
 
 const index = () => {
-  
+  const {session} = useAuth();
+ 
   return (
     <View>
-
-    {/* { globalVariable.Session ? <Redirect href={'/(tabs)'} /> : <Redirect href={'/(auth)/sign-in'} /> } */}
-     <Redirect href={'/(auth)/sign-in'} /> 
-    
-    
+    { session ? <Redirect href={'/(tabs)'} /> : <Redirect href={'/(auth)/sign-in'} /> }
     </View>
   );
 };

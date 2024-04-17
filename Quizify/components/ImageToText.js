@@ -186,13 +186,13 @@ const styles = StyleSheet.create({
         alignContent: "center", 
         alignItems: "center", 
         justifyContent: "space-evenly", 
-        backgroundColor: "#fff", 
+        backgroundColor: "#fdf1bc", 
         height: "100%", 
     }, 
 	heading2: { 
 		fontSize: 24,  
 		marginBottom: 8, 
-		color: "#ff6262", 
+		color: "#fc7474", 
 		textAlign: "center", 
 		fontWeight: 'bold',
 		marginBottom: 55
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
 		marginVertical: -10,
 		marginHorizontal: 100,
 		alignItems: 'center',
-		backgroundColor: '#ff6262',
+		backgroundColor: '#fc7474',
 		padding: 15,
 		borderRadius: 1000,
 		width: 300

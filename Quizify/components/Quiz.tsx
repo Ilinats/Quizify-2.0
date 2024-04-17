@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, SafeAreaView } from 'react-native';
 import { globalVariable } from '@/globals';
 import { useNavigation } from 'expo-router';
 import Button from './Button';
@@ -59,7 +59,7 @@ const QuizComponent = () => {
         if (GPTOutput() && GPTOutput().questions && GPTOutput().questions.length > 1){
             if (questionIndex < GPTOutput().questions.length) {
                 return (
-                    <View>
+                    <SafeAreaView style={styles.container}> 
                         <Text style={styles.question}>{GPTOutput().questions[questionIndex].question}</Text>
                         <Pressable
                             onPress={() => checkAnswer(0)}
@@ -101,15 +101,15 @@ const QuizComponent = () => {
                         >
                             <Text style={styles.title}>{GPTOutput().questions[questionIndex].answers[3].answer}</Text>
                         </Pressable>
-                    </View>
+                    </SafeAreaView>
                 );
             } else {
                 return (
-                    <View>
+                    <SafeAreaView style={styles.container}>
                         <Text style={styles.score}>Quiz Over</Text>
                         <Text style={styles.score}>Your Score: {score}</Text>
                         <Button onPress={handlePress} text='Go Back' />
-                    </View>
+                    </SafeAreaView>
                 );
             }
         } else {
@@ -129,18 +129,32 @@ const QuizComponent = () => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        display: "flex", 
+        alignContent: "center", 
+        alignItems: "center", 
+        justifyContent: "space-evenly", 
+        backgroundColor: "#fdf1bc", 
+        height: "100%",
+    },
     button: {
-        backgroundColor: '#fc7474',
-        padding: 15,
-        textAlign: "center",
-        borderRadius: 100,
-        marginVertical: 10,
+        marginTop: -180,
+		marginVertical: -10,
+		marginHorizontal: 100,
+		alignItems: 'center',
+		backgroundColor: '#fc7474',
+		padding: 15,
+		borderRadius: 100,
+		width: 350
     },
     score: {
-        padding: 0,
-        textAlign: "center",
+        padding: 15,
+        color: 'black',
+        marginTop: 5,
+		marginVertical: -280,
+		marginHorizontal: 100,
+		textAlign: "center",
         borderRadius: 100,
-        marginVertical: 10,
     },
     correctAnswer: {
         backgroundColor: 'green',
@@ -158,7 +172,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'black',
         textAlign: 'center',
-        marginVertical: 10,
+        marginVertical: 30,
     }
 });
 

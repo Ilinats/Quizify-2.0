@@ -76,7 +76,7 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f6f6f6',
+    backgroundColor: "#fdf1bc",
   },
   scrollViewContainer: {
     flexGrow: 1,

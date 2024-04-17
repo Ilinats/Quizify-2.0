@@ -22,6 +22,7 @@
     "@zachlove/expo-pdf-reader": "^1.1.3",
     "axios": "^1.6.8",
     "base64-arraybuffer": "^1.0.2",
+    "base64-js": "^1.5.1",
     "buffer": "^6.0.3",
     "expo": "~50.0.14",
     "expo-document-picker": "~11.10.1",

@@ -15,7 +15,8 @@ const FolderScreen = () => {
     var sth;
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) 
+            return;
         loadImages();
     }, [user]);
 
@@ -25,14 +26,13 @@ const FolderScreen = () => {
         }
     }, [images]);
     const loadImages = async () => {
-        console.log()
         const path = `${user?.id}/${Folder.FolderName}/${Folder.QuizName}`;
         const { data, error } = await supabase.storage.from('files').list(path);
 
         if (!data || error)
             return;
 
-        console.log('Data:', data);
+        //console.log('Data:', data);
         sth = path;
 
         for (let i = 0; i < data.length; i++) {
@@ -40,7 +40,7 @@ const FolderScreen = () => {
                 .from('files')
                 .download(`${sth}/${data[i].name}`)
                 .then(({ data: extractedData }) => {
-                    console.log('Extracted data:', extractedData);
+                    //console.log('Extracted data:', extractedData);
                     if(data[i].metadata.mimetype != 'image/png' && data[i].metadata.mimetype != 'image/jpeg') 
                         return;
                     const fr = new FileReader();

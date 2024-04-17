@@ -74,7 +74,7 @@ const ChatGPT = ({ textFromImage, time }) => {
             const fileName = `quiz.json`;
             const filePath = `${user.id}/${formattedDate}/${time}/${fileName}`;
 
-            const { data, error } = await supabase.storage.from('files').upload(filePath, jsonData, fileName);
+            const { data, error } = await supabase.storage.from('files').upload(filePath, jsonString, fileName);
 
             if (error) {
                 console.error('Error uploading JSON file:', error.message);

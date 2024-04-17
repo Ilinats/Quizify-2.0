@@ -4,13 +4,11 @@ import axios from 'axios';
 import Button from '../components/Button';
 import { globalVariable } from '../globals';
 import { Link } from 'expo-router';
-
-import * as FileSystem from 'expo-file-system'
-import { decode } from 'base64-arraybuffer'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../providers/AuthProvider'
+import { globalVariable2 } from '../try';
 
-const ChatGPT = ({ textFromImage }) => {
+const ChatGPT = ({ textFromImage, time }) => {
     const { user } = useAuth()
     const apiKey = '###'
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -18,6 +16,7 @@ const ChatGPT = ({ textFromImage }) => {
     const handleSend = async () => {
         console.log('aa');
         var questions;
+        globalVariable2.Time = time;
 
         console.log(textFromImage, typeof textFromImage);
 
@@ -25,24 +24,24 @@ const ChatGPT = ({ textFromImage }) => {
 
             model: "gpt-3.5-turbo",
             messages: [
-                {
-                    role: "system",
-                    content: "You are a helpful assistant."
-                },
-                {
-                    role: "user",
-                    content: "Generate two questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be calle 'answer')." + textFromImage //malko da se opravi
-                }
+              {
+                role: "system",
+                content: "You are a helpful assistant."
+              },
+              {
+                role: "user",
+                content: "Generate between 2 and 15 questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be called 'answer')." + textFromImage //malko da se opravi
+              }
             ],
             max_tokens: 400,
-        },
-            //stop: ["."]
-            {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                }
-            }).then(response => {
+          },
+          //stop: ["."]
+       {
+          headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+          }
+      }).then(response => {
                 const content = response.data.choices[0].message.content;
                 const jsonString = content.replace(/```json\s*([\s\S]*?)\s*```/g, '$1');
                 const jsonData = JSON.parse(jsonString);
@@ -50,7 +49,8 @@ const ChatGPT = ({ textFromImage }) => {
                 console.log(globalVariable.GPTOutput);
                 setAnswerLocked(false)
                 //json save globalVariable.GPTOutput
-                uploadJSONFile('gpt.json', globalVariable.GPTOutput)
+                globalVariable
+                uploadJSONFile(globalVariable.GPTOutput)
 
             })
             .catch(error => {
@@ -60,12 +60,9 @@ const ChatGPT = ({ textFromImage }) => {
         console.log('bb');
     };
 
-    const uploadJSONFile = async (fileName, jsonData) => {
+    const uploadJSONFile = async (jsonData) => {
         try {
-            // Convert JSON data to string
             const jsonString = JSON.stringify(jsonData);
-
-            // Upload JSON file to Supabase Storage
 
             const currentDate = new Date();
 
@@ -74,8 +71,8 @@ const ChatGPT = ({ textFromImage }) => {
             const day = String(currentDate.getDate()).padStart(2, '0');
             const formattedDate = `${year}-${month}-${day}`;
             const timestamp = Date.now();
-            const fileName = `test_${timestamp}.json`;
-            const filePath = `${user.id}/${formattedDate}/${fileName}`;
+            const fileName = `quiz.json`;
+            const filePath = `${user.id}/${formattedDate}/${time}/${fileName}`;
 
             const { data, error } = await supabase.storage.from('files').upload(filePath, jsonData, fileName);
 

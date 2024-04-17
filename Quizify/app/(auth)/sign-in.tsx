@@ -1,48 +1,28 @@
 import { useState} from 'react'
-import {AppState,Alert,View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
+import {View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Stack, Link } from 'expo-router'
-import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../providers/AuthProvider'
+import {supabase} from '../../lib/supabase'
 
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
-AppState.addEventListener('change', (state) => {
-    if (state === 'active') {
-      supabase.auth.startAutoRefresh()
-    } else {
-      supabase.auth.stopAutoRefresh()
+    async function onSignInPress() {
+        setLoading(true);
+        const {error} = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+
+        if(error)
+            alert(error.message)
+
+        setLoading(false);
     }
-  })
 
-const SignIn = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
-
-    async function signInWithEmail() {
-      setLoading(true)
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      })
-  
-      if (error) Alert.alert(error.message)
-      setLoading(false)
-    }
-  
-    async function signUpWithEmail() {
-      setLoading(true)
-      const {
-       // data: { session },
-        error
-      } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-      })
-  
-      if (error) Alert.alert(error.message)
-      //if (!session) Alert.alert('no session')
-      setLoading(false)
+    const onSignUpPress = () => {
     }
 
     return (
@@ -68,17 +48,17 @@ const SignIn = () => {
             style={styles.inputField}
         />
 
-        <Link href={'/(tabs)'} style={styles.button} asChild>
-            <TouchableOpacity onPress={() => signInWithEmail()}>
+        <Link href={'../(tabs)'} style={styles.button} asChild>
+            <TouchableOpacity onPress={onSignInPress} disabled={loading}>
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
             </TouchableOpacity>
         </Link>
-        
-        <TouchableOpacity onPress={() => signUpWithEmail()}  style={styles.button}>
-            <Text style={{ color: '#fff' }}>Create Account</Text>
-        </TouchableOpacity>
+        <Link href={'/(auth)/sign-up'} style={styles.button} asChild>
+            <TouchableOpacity onPress={onSignUpPress}>
+                <Text style={{ color: '#fff' }}>Create Account</Text>
+            </TouchableOpacity>
+        </Link>
         </View>
-
     )
     }
 
@@ -142,4 +122,4 @@ const SignIn = () => {
 
 
 
-export default SignIn;
+export default Login;

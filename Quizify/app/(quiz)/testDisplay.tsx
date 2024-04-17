@@ -1,4 +1,4 @@
-import { Text, FlatList, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { Text, FlatList, View, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { useAuth } from '../../providers/AuthProvider';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
@@ -22,6 +22,7 @@ export default function TestDisplay() {
     useEffect(() => {
         if (quiz && userAnswers) {
             setLoading(false);
+            console.log('User answers:', userAnswers);
         }
     }, [quiz, userAnswers]);
     
@@ -47,7 +48,7 @@ export default function TestDisplay() {
                             const parsedResult = JSON.parse(result); // Parse the JSON string
                             setQuiz(parsedResult);
                         } else if(data[i].metadata.mimetype === 'text/plain') {
-                            setUserAnswers(result);
+                            setUserAnswers(typeof result === 'string' ? result.replaceAll(',', '') : result);
                         }
                     };
                     reader.readAsText(extractedData!);
@@ -55,33 +56,55 @@ export default function TestDisplay() {
         }
     };
 
-    const renderItem = ({ item }: { item: any }) => {
-        const userAnswerIndex = answerIndex;
-        answerIndex += 2; // Assuming each question has two answers
-        return (
-            <View style={styles.questionContainer}>
-                <View style={styles.bubble}>
-                    <Text style={styles.questionText}>{item.question}</Text>
-                    {item.answers.map((answer: any, index: number) => (
-                        <Text key={index} style={[styles.answerText, answer.is_correct ? styles.correctBubble : (userAnswers[userAnswerIndex] === index ? styles.wrongBubble : null)]}>
-                            {answer.answer}
-                        </Text>
-                    ))}
-                </View>
-            </View>
-        );
-    };
+    // const renderItem = ({ item }: { item: any }) => {
+    //     const userAnswerIndex = answerIndex;
+    //     answerIndex += 2; // Assuming each question has two answers
+    //     return (
+    //         <View style={styles.questionContainer}>
+    //             <View style={styles.bubble}>
+    //                 <Text style={styles.questionText}>{item.question}</Text>
+    //                 {item.answers.map((answer: any, index: number) => (
+    //                     <Text key={index} style={[styles.answerText, answer.is_correct ? styles.correctBubble : (userAnswers[userAnswerIndex] === index ? styles.wrongBubble : null)]}>
+    //                         {answer.answer}
+    //                     </Text>
+    //                 ))}
+    //             </View>
+    //         </View>
+    //     );
+    // };
 
     return (
         <View style={styles.container}>
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <FlatList 
-                    data={quiz.questions}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                />
+                <ScrollView contentContainerStyle={styles.container}> 
+                {quiz.questions.map((data: any, questionIndex: any) => (
+    <View style={styles.questionContainer} key={questionIndex}>
+        <View style={styles.bubble}>
+            <Text style={styles.questionText}>{data.question}</Text>
+            {data.answers.map((answer: any, answerIndex: number) => {
+                const userAnswerIndex = parseInt(userAnswers[questionIndex]);
+                const isUserSelected = userAnswerIndex === answerIndex;
+                const isCorrect = answer.is_correct;
+
+                return (
+                    <Text
+                        key={answerIndex}
+                        style={[
+                            styles.answerText,
+                            isCorrect ? styles.correctBubble : (isUserSelected ? styles.wrongBubble : null),
+                        ]}
+                    >
+                        {answer.answer}
+                    </Text>
+                );
+            })}
+        </View>
+    </View>
+))}
+
+                </ScrollView>
             )}
         </View>
     );
@@ -90,11 +113,9 @@ export default function TestDisplay() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 5,
-        paddingTop: 10,
         backgroundColor: "#fdf1bc",
+        paddingTop: 10,
     },
     questionContainer: {
         marginBottom: 10,
@@ -112,12 +133,12 @@ const styles = StyleSheet.create({
         color: 'red',
     },
     questionText: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 15,
     },
     answerText: {
-        fontSize: 16,
+        fontSize: 18,
         marginBottom: 5,
     },
 });

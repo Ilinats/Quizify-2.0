@@ -1,3 +1,3 @@
-export const globalVariable = {
-    Session: false,
+export const globalVariable2 = {
+    Time: 0,
   };

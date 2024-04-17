@@ -46,7 +46,7 @@ import React, { useState, useEffect, createContext, PropsWithChildren } from 're
 import { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 
-type AuthProps = {
+export type AuthProps = {
   user: User | null
   session: Session | null
   initialized?: boolean

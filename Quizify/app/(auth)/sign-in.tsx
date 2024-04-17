@@ -8,59 +8,81 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [isFormValid, setIsFormValid] = useState(false);
 
-    async function onSignInPress() {
+    const validateForm = () => {
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            setIsFormValid(false);
+        } else
+            setIsFormValid(true);
+    };
+
+    const onSignInPress = async () => {
+        validateForm();
+
+        if (!isFormValid) {
+            return;
+        }
+        
         setLoading(true);
-        const {error} = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
-        })
+        });
 
-        if(error)
-            alert(error.message)
+        if (error)
+            alert(error.message);
 
         setLoading(false);
-    }
-
-    const onSignUpPress = () => {
-    }
+    };
 
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ headerShown: false }} />
-        <Image style={styles.curve} source={require('../../assets/images/curve.png')} />
-        <Image style={styles.down1} source={require('../../assets/images/down1.png')} />
-        <Image style={styles.up1} source={require('../../assets/images/up1.png')} />
-        <Text style={styles.header}>Welcome</Text>
+            <Image style={styles.curve} source={require('../../assets/images/curve.png')} />
+            <Image style={styles.down1} source={require('../../assets/images/down1.png')} />
+            <Image style={styles.up1} source={require('../../assets/images/up1.png')} />
+            <Text style={styles.header}>Welcome</Text>
 
-        <TextInput
-            autoCapitalize="none"
-            placeholder="john@doe.com"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.inputField}
-        />
-        <TextInput
-            placeholder="password"
-            value={password}
-            onChangeText={setPassword} 
-            secureTextEntry
-            style={styles.inputField}
-        />
+            <TextInput
+                autoCapitalize="none"
+                placeholder="john@doe.com"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.inputField}
+            />
+            <TextInput
+                placeholder="password"
+                value={password}
+                onChangeText={setPassword} 
+                secureTextEntry
+                style={styles.inputField}
+            />
 
-        <Link href={'../(tabs)'} style={styles.button} asChild>
-            <TouchableOpacity onPress={onSignInPress} disabled={loading}>
-                <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
-            </TouchableOpacity>
-        </Link>
-        <Link href={'/(auth)/sign-up'} style={styles.button} asChild>
-            <TouchableOpacity onPress={onSignUpPress}>
-                <Text style={{ color: '#fff' }}>Create Account</Text>
-            </TouchableOpacity>
-        </Link>
+
+            {isFormValid ? (
+                <Link href={'../(tabs)'} style={styles.button} asChild>
+                    <TouchableOpacity onPress={onSignInPress} disabled={loading}>
+                        <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
+                    </TouchableOpacity>
+                </Link>
+            ) : (
+                <TouchableOpacity style={styles.button} onPress={onSignInPress} disabled={loading}>
+                    <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
+                </TouchableOpacity>
+            )}
+
+            <Link href={'/(auth)/sign-up'} style={styles.button} asChild>
+                <TouchableOpacity>
+                    <Text style={{ color: '#fff' }}>Create Account</Text>
+                </TouchableOpacity>
+            </Link>
         </View>
-    )
-    }
+    );
+};
+
 
     const styles = StyleSheet.create({
     curve: {

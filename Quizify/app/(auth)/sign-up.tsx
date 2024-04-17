@@ -8,16 +8,36 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    const validateForm = () => {
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            setIsFormValid(false);
+        } else {
+            setError('');
+            setIsFormValid(true);
+        }
+    };
 
     async function onSignUpPress() {
+         validateForm();
+
+        if (!isFormValid)
+            return;
+
         setLoading(true);
+
         const {error} = await supabase.auth.signUp({
             email,
             password,
         })
 
-        if(error)
-            alert(error.message)
+        if (error)
+            alert(error.message);
+        else
+            setError('');
 
         setLoading(false);
     }
@@ -48,11 +68,18 @@ const Login = () => {
             style={styles.inputField}
         />
 
-        <Link href={'../(tabs)'} style={styles.button} asChild>
-            <TouchableOpacity onPress={onSignUpPress} disabled={loading}>
+        {isFormValid ? (
+            <Link href={'../(tabs)'} style={styles.button} asChild>
+                <TouchableOpacity onPress={onSignUpPress} disabled={loading}>
+                    <Text style={{ color: '#fff', textAlign: 'center'}}>Create Account</Text>
+                </TouchableOpacity>
+            </Link>
+        ) : (
+            <TouchableOpacity style={styles.button} onPress={onSignUpPress} disabled={loading}>
                 <Text style={{ color: '#fff', textAlign: 'center'}}>Create Account</Text>
             </TouchableOpacity>
-        </Link>
+        )}
+        
         <Link href={'/(auth)/sign-in'} style={styles.button} asChild>
             <TouchableOpacity onPress={onSignInPress}>
                 <Text style={{ color: '#fff' }}>Sign in</Text>

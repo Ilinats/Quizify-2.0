@@ -7,6 +7,7 @@ import { Redirect } from 'expo-router';
 
 export default function TabOneScreen() {
     const {user} = useAuth();
+    console.log('User:', user);
 
     if(!user) {
         return <Redirect href={'/(auth)/sign-in'} />;

@@ -8,9 +8,6 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../providers/AuthProvider'
 import { globalVariable2 } from '../try';
 
-const ChatGPT = ({ textFromImage, time }) => {
-    const { user } = useAuth()
-    const apiKey = '###'
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
     const [answerLocked, setAnswerLocked] = useState(true);
     const handleSend = async () => {

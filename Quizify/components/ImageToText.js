@@ -116,7 +116,6 @@ export default function ImageToText() {
             let myHeaders = new Headers();
             myHeaders.append(
                 "apikey",
-                "###"
             );
             myHeaders.append(
                 "Content-Type",

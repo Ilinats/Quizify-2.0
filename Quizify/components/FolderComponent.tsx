@@ -1,23 +1,25 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import  AntDesign  from '@expo/vector-icons/AntDesign';
 import {Link} from 'expo-router';
 
-const FolderComponent = ({ name, onPress }) => {
-    return (
-      <Link href="/folderScreen" asChild>
-      <TouchableOpacity onPress={onPress} style={styles.folderContainer}>
-        <FontAwesome
-          name="folder"
-          color={'#ff6262'}
-          size={40}
-          style={{ marginRight: 15, opacity: 0.8}}
-        />
-        <Text style={styles.folderName}>{name}</Text>
-      </TouchableOpacity>
-      </Link>
-    );
-};
+const FolderComponent = ({ folderName, onPress }) =>{
+  return (
+    <Link href={{pathname:"/(folders)/folderScreen"}} asChild>
+    <TouchableOpacity 
+      style={styles.folderContainer} 
+      onPress={onPress}
+    >
+      <AntDesign 
+        name="book"
+        color={'#ff6262'}
+        size={40}
+        style={{ marginRight: 15, opacity: 0.8 }}
+      />
+      <Text style={styles.folderName}>{'Quiz ' + folderName}</Text>
+    </TouchableOpacity></Link>
+  );
+}
 
 const styles = StyleSheet.create({
     folderContainer: {

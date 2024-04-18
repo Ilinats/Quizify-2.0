@@ -278,8 +278,7 @@ const styles = StyleSheet.create({
         height: 150,
         objectFit: "contain",
         marginBottom: 10,
-        marginRight: - 50,
-        marginLetf: - 50,
+        marginRight: 50
     },
     scrollView: {
         maxHeight: 150, // Adjust the maxHeight as needed

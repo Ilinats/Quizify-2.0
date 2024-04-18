@@ -1,4 +1,4 @@
-import { useState} from 'react'
+import { useEffect, useState} from 'react'
 import {View, TextInput, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Stack, Link } from 'expo-router'
@@ -8,20 +8,15 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
 
-    const validateForm = () => {
-        if (!email || !password) {
-            alert('Please fill in all fields');
-            setIsFormValid(false);
-        } else
+    useEffect(() => {
+        if(email && password) {
             setIsFormValid(true);
-    };
+        }
+    }, [email, password]);
 
     const onSignInPress = async () => {
-        validateForm();
-
         if (!isFormValid) {
             return;
         }
@@ -34,8 +29,8 @@ const Login = () => {
 
         if (error)
             alert(error.message);
-
-        setLoading(false);
+        else
+            setLoading(false);
     };
 
     return (
@@ -63,11 +58,13 @@ const Login = () => {
 
 
             {isFormValid ? (
+                <TouchableOpacity disabled={loading}>
                 <Link href={'../(tabs)'} style={styles.button} asChild>
                     <TouchableOpacity onPress={onSignInPress} disabled={loading}>
                         <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>
                     </TouchableOpacity>
                 </Link>
+                </TouchableOpacity>
             ) : (
                 <TouchableOpacity style={styles.button} onPress={onSignInPress} disabled={loading}>
                     <Text style={{ color: '#fff', textAlign: 'center'}}>Sign in</Text>

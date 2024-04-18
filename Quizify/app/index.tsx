@@ -4,7 +4,10 @@ import { Link, Redirect } from 'expo-router';
 import { useAuth } from '@/providers/AuthProvider';
 
 const index = () => {
-  const {session, loading} = useAuth();
+  const {session, loading, user} = useAuth();
+
+  if(!user) 
+    return <Redirect href={'/(auth)/sign-in'} />;
 
   if(loading) {
     return <ActivityIndicator />

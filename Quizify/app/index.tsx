@@ -6,6 +6,8 @@ import { useAuth } from '@/providers/AuthProvider';
 const index = () => {
   const {session, loading, user} = useAuth();
 
+  console.log('User:', user);
+
   if(!user) 
     return <Redirect href={'/(auth)/sign-in'} />;
 

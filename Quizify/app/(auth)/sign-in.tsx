@@ -16,7 +16,18 @@ const Login = () => {
         }
     }, [email, password]);
 
+    const validateForm = () => {
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            setIsFormValid(false);
+        } else {
+            setIsFormValid(true);
+        }
+    };
+
     const onSignInPress = async () => {
+        validateForm();
+
         if (!isFormValid) {
             return;
         }

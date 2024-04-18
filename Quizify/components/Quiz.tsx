@@ -13,6 +13,7 @@ const QuizComponent = () => {
     const [color, setColor] = useState(false);
     const [pressedIndex, setPressedIndex] = useState(-1); // to highlight the correct answer after pressing
     const [answerLocked, setAnswerLocked] = useState(false); // to prevent answering while animation is ongoing
+    const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
     var allPressed1: number[] = [];
     var [allPressed, setAllPressed] = useState(allPressed1);
@@ -26,6 +27,7 @@ const QuizComponent = () => {
 
     const handlePress = async () => {
         resetQuiz();
+        setLoading(false);
         const currentDate = new Date();
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -45,7 +47,9 @@ const QuizComponent = () => {
     }
 
     const checkAnswer = (index: number) => {
-        if (answerLocked) return;
+        if (answerLocked) 
+            return;
+
         setPressedIndex(index);
         console.log(index);
         allPressed.push(index);
@@ -80,7 +84,7 @@ const QuizComponent = () => {
 
     const renderQuiz = () => {
 
-        if (GPTOutput() && GPTOutput().questions && GPTOutput().questions.length > 1) {
+        if (loading && GPTOutput() && GPTOutput().questions && GPTOutput().questions.length > 1) {
             if (questionIndex < GPTOutput().questions.length) {
                 return (
                     <View>
@@ -90,7 +94,7 @@ const QuizComponent = () => {
                             style={[
                                 styles.button,
                                 color && GPTOutput().questions[questionIndex].answers[0].is_correct && styles.correctAnswer,
-                                color && !GPTOutput().questions[questionIndex].answers[0].is_correct && pressedIndex === 1 && styles.wrongAnswer,
+                                color && !GPTOutput().questions[questionIndex].answers[0].is_correct && pressedIndex === 0 && styles.wrongAnswer,
                             ]}
                         >
                             <Text style={styles.title}>{GPTOutput().questions[questionIndex].answers[0].answer}</Text>

@@ -59,7 +59,7 @@ export default function TestDisplay() {
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <ScrollView contentContainerStyle={styles.container}>
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     {quiz.questions.map((data: any, questionIndex: any) => (
                         <View style={styles.questionContainer} key={questionIndex}>
                             <View style={styles.bubble}>
@@ -97,6 +97,11 @@ const styles = StyleSheet.create({
         padding: 5,
         backgroundColor: "#fdf1bc",
         paddingTop: 10,
+    },
+    scrollViewContent: {
+        flexGrow: 1, // This enables scrolling for the content
+        justifyContent: 'center', // Optional: Align content in the center vertically
+        paddingHorizontal: 10, // Optional: Add horizontal padding to the content
     },
     questionContainer: {
         marginBottom: 10,

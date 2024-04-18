@@ -18,7 +18,7 @@ const Button = forwardRef<View | null, ButtonProps>(
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: -65,
 		marginVertical: -10,
 		marginHorizontal: 100,
 		alignItems: 'center',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Image, SafeAreaView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -15,8 +15,10 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../providers/AuthProvider'
 
 export default function ImageToText() {
-    const [image, setImage] = useState(null);
+    // const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]);
     const { user } = useAuth();
+
     console.log('bla bla', user);
 
     const [extractedText, setExtractedText] = useState("");
@@ -49,7 +51,8 @@ export default function ImageToText() {
                 });
             if (!result.canceled) {
                 performOCR(result.assets[0]);
-                setImage(result.assets[0].uri);
+                setImages([...images, result.assets[0].uri]);
+
 
                 const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, { encoding: 'base64' });
 
@@ -87,7 +90,8 @@ export default function ImageToText() {
             });
             if (!result.canceled) {
                 performOCR(result.assets[0]);
-                setImage(result.assets[0].uri);
+                setImages([...images, result.assets[0].uri]);
+
 
                 const base64 = await FileSystem.readAsStringAsync(image.uri, { encoding: 'base64' });
                 console.log(1);
@@ -208,16 +212,22 @@ export default function ImageToText() {
                 <TouchableOpacity onPress={pickPDF} style={styles.button} disabled={pdf}>
                     <Text style={{ color: '#fff' }}>Upload PDF file</Text>
                 </TouchableOpacity>
-                {/* {image && ( 
-                <Image 
-                    source={{ uri: image }} 
-                    style={{ 
-                        width: 200, 
-                        height: 150, 
-                        objectFit: "contain", 
-                    }} 
-                /> 
-            )}  */}
+
+                <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollViewContainer} // Change this line
+                    style={styles.scrollView}
+                >
+                    {images.map((uri, index) => (
+                        <Image
+                            key={index}
+                            source={{ uri: uri }}
+                            style={styles.image}
+                        />
+                    ))}
+                </ScrollView>
+
                 <Text style={styles.text1}>
                     {''}
                 </Text>
@@ -251,12 +261,27 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: -65,
-        marginVertical: -10,
-        marginHorizontal: 100,
+        marginVertical: 15,
+        marginHorizontal: 50,
         alignItems: 'center',
         backgroundColor: '#fc7474',
         padding: 15,
         borderRadius: 1000,
         width: 300
-    }
+    },
+    scrollViewContainer: { 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+    },
+    image: {
+        width: 200,
+        height: 150,
+        objectFit: "contain",
+        marginBottom: 10,
+        marginRight: - 50,
+        marginLetf: - 50,
+    },
+    scrollView: {
+        maxHeight: 150, // Adjust the maxHeight as needed
+    },
 });

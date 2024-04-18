@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     container: {
-        marginTop: 40,
-        marginVertical: -10,
+        marginTop: -65,
+		marginVertical: -10,
         marginHorizontal: 30,
         alignItems: 'center',
         backgroundColor: '#ff6262',

@@ -2,6 +2,9 @@ import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
+import  MaterialIcons  from '@expo/vector-icons/MaterialIcons';
+import  Entypo  from '@expo/vector-icons/Entypo';
+
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -30,16 +33,22 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Quiz',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <Entypo 
+          name="news" size={24} color={color} />
         }}
       />
       <Tabs.Screen
         name="two"
         options={{
           title: 'Storage',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons 
+          name="save-alt" 
+          size={24} 
+          color={color}/>
+  
         }}
       />
     </Tabs>
+
   );
 }

@@ -10,9 +10,18 @@ import { globalVariable2 } from '../try';
 
 const ChatGPT = ({ textFromImage, time }) => {
     const { user } = useAuth()
-    const apiKey = '###'
+    const apiKey = '###';
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
     const [answerLocked, setAnswerLocked] = useState(true);
+
+    const shuffleAnswers = (answers) => {
+        for (let i = answers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [answers[i], answers[j]] = [answers[j], answers[i]];
+        }
+        return answers;
+    };
+
     const handleSend = async () => {
         console.log('aa');
         var questions;
@@ -30,7 +39,7 @@ const ChatGPT = ({ textFromImage, time }) => {
               },
               {
                 role: "user",
-                content: "Generate between 2 and 15 questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be called 'answer')." + textFromImage //malko da se opravi
+                content: "Generate between 2 and 10 questions with 4 answers based on this text. The format should be JSON and it should have a is_correct value for each answer (the answer var should be called 'answer')." + textFromImage //malko da se opravi
               }
             ],
             max_tokens: 400,
@@ -45,6 +54,9 @@ const ChatGPT = ({ textFromImage, time }) => {
                 const content = response.data.choices[0].message.content;
                 const jsonString = content.replace(/```json\s*([\s\S]*?)\s*```/g, '$1');
                 const jsonData = JSON.parse(jsonString);
+                jsonData.questions.forEach(question => {
+                    question.answers = shuffleAnswers(question.answers);
+                });
                 globalVariable.GPTOutput = jsonData;
                 console.log(globalVariable.GPTOutput);
                 setAnswerLocked(false)

@@ -136,7 +136,10 @@ const QuizComponent = () => {
                     <View>
                         <Text style={styles.score}>Quiz Over</Text>
                         <Text style={styles.score}>Your Score: {score}</Text>
-                        <Button onPress={handlePress} text='Go Back' />
+                        <View style={{ marginTop: 90, alignItems: 'center' }}>
+                            <Button onPress={handlePress} text='Go Back' />
+                        </View>
+
                     </View>
                 );
             }

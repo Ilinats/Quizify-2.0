@@ -74,14 +74,14 @@ export default function ImageToText() {
                     console.log('File uploaded successfully:', data);
                 }
             }
-            }
-        };
+        }
+    };
 
-        const pickImageCamera = async () => {
-            if (counter == 4) {
-                setLimit(true);
-                alert('You have reached the limit of allowed images');
-            } else {
+    const pickImageCamera = async () => {
+        if (counter == 4) {
+            setLimit(true);
+            alert('You have reached the limit of allowed images');
+        } else {
             let result = await ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
@@ -112,129 +112,142 @@ export default function ImageToText() {
                     console.log('File uploaded successfully:', data);
                 }
             }
-            }
+        }
+    };
+
+    const performOCR = (file) => {
+        var temp;
+        let myHeaders = new Headers();
+        myHeaders.append(
+            "apikey",
+            "###"
+        );
+        myHeaders.append(
+            "Content-Type",
+            "multipart/form-data"
+        );
+
+        let raw = file;
+        let requestOptions = {
+            method: "POST",
+            redirect: "follow",
+            headers: myHeaders,
+            body: raw,
         };
 
-        const performOCR = (file) => {
-            var temp;
-            let myHeaders = new Headers();
-            myHeaders.append(
-                "apikey",
-                "###"
-            );
-            myHeaders.append(
-                "Content-Type",
-                "multipart/form-data"
-            );
+        // Send a POST request to the OCR API 
+        fetch(
+            "https://api.apilayer.com/image_to_text/upload",
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result) => {
 
-            let raw = file;
-            let requestOptions = {
-                method: "POST",
-                redirect: "follow",
-                headers: myHeaders,
-                body: raw,
-            };
+                // Set the extracted text in state 
+                temp = extractedText + result["all_text"];
+                //console.log(temp);
+                console.log('1');
+                setExtractedText(temp);
+            })
+            .catch((error) => console.log("error", error));
+    };
 
-            // Send a POST request to the OCR API 
-            fetch(
-                "https://api.apilayer.com/image_to_text/upload",
-                requestOptions
-            )
-                .then((response) => response.json())
-                .then((result) => {
+    const pickPDF = async () => {
+        console.log('pickPDF');
+        if (pdfCounter == 1) {
+            setPdf(true);
+            alert('You have reached the limit of allowed PDFs');
+        } else {
+            try {
+                const document = await DocumentPicker.getDocumentAsync({
+                    type: 'application/pdf',
+                });
 
-                    // Set the extracted text in state 
-                    temp = extractedText + result["all_text"];
-                    //console.log(temp);
-                    console.log('1');
-                    setExtractedText(temp);
-                })
-                .catch((error) => console.log("error", error));
-        };
+                console.log('document: ', document);
 
-        const pickPDF = async () => {
-            console.log('pickPDF');
-            if (pdfCounter == 1) {
-                setPdf(true);
-                alert('You have reached the limit of allowed PDFs');
-            } else {
-                try {
-                    const document = await DocumentPicker.getDocumentAsync({
+                if (document && !document.canceled) {
+                    const pdfPath = document.assets[0].uri;
+
+                    console.log('pdfPath: ', pdfPath);
+
+                    var source = require('../assets/images/pdf.jpg');
+                    setImages([...images, source]);
+
+                    var data = new FormData();
+                    data.append('file', {
+                        uri: pdfPath,
+                        name: 'test.pdf',
                         type: 'application/pdf',
                     });
 
-                    console.log('document: ', document);
-
-                    if (document && !document.canceled) {
-                        const pdfPath = document.assets[0].uri;
-
-                        console.log('pdfPath: ', pdfPath);
-
-                        var data = new FormData();
-                        data.append('file', {
-                            uri: pdfPath,
-                            name: 'test.pdf',
-                            type: 'application/pdf',
-                        });
-
-                        axios({
-                            method: "post",
-                            url: apiUrl,
-                            data: data,
-                            headers: { "Content-Type": "multipart/form-data", 'Authorization': 'Basic ' + Buffer.from(apiKey + ":").toString('base64') },
+                    axios({
+                        method: "post",
+                        url: apiUrl,
+                        data: data,
+                        headers: { "Content-Type": "multipart/form-data", 'Authorization': 'Basic ' + Buffer.from(apiKey + ":").toString('base64') },
+                    })
+                        .then(function (response) {
+                            console.log("OK: ", response.data.results[0].page_data[0].raw_text);
+                            var temp = extractedText + response.data.results[0].page_data[0].raw_text;
+                            setExtractedText(temp);
                         })
-                            .then(function (response) {
-                                console.log("OK: ", response.data.results[0].page_data[0].raw_text);
-                                var temp = extractedText + response.data.results[0].page_data[0].raw_text;
-                                setExtractedText(temp);
-                            })
-                            .catch(function (response) {
-                                console.log("Error: ", response);
-                            });
-                    }
-                } catch (err) {
-                    console.error('Error while picking the file:', err);
+                        .catch(function (response) {
+                            console.log("Error: ", response);
+                        });
                 }
+            } catch (err) {
+                console.error('Error while picking the file:', err);
             }
-        };
+        }
+    };
 
-        return (
-            <SafeAreaView style={styles.container}>
-                <Text style={styles.heading2}>
-                    Quizify
-                </Text>
-                <TouchableOpacity onPress={pickImageGallery} style={styles.button} disabled={limit}>
-                    <Text style={{ color: '#fff' }}>Pick an image from gallery</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={pickImageCamera} style={styles.button} disabled={limit}>
-                    <Text style={{ color: '#fff' }}>Take a photo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={pickPDF} style={styles.button} disabled={pdf}>
-                    <Text style={{ color: '#fff' }}>Upload PDF file</Text>
-                </TouchableOpacity>
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.heading2}>
+                Quizify
+            </Text>
+            <TouchableOpacity onPress={pickImageGallery} style={styles.button} disabled={limit}>
+                <Text style={{ color: '#fff' }}>Pick an image from gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={pickImageCamera} style={styles.button} disabled={limit}>
+                <Text style={{ color: '#fff' }}>Take a photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={pickPDF} style={styles.button} disabled={pdf}>
+                <Text style={{ color: '#fff' }}>Upload PDF file</Text>
+            </TouchableOpacity>
 
-                <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollViewContainer} // Change this line
-                    style={styles.scrollView}
-                >
-                    {images.map((uri, index) => (
-                        <Image
-                            key={index}
-                            source={{ uri: uri }}
-                            style={styles.image}
-                        />
-                    ))}
-                </ScrollView>
+            <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.scrollViewContainer}
+                style={styles.scrollView}
+            >
+                {images.map((uri, index) => (
+                    <View key={index} style={styles.imageContainer}>
+                        {typeof uri === 'string' ? (
+                            <Image
+                                source={{ uri: uri }}
+                                style={styles.image}
+                            />
+                        ) : (
+                            <Image
+                                source={uri}
+                                style={styles.image}
+                            />
+                        )}
+                    </View>
+                ))}
+            </ScrollView>
 
-                <Text style={styles.text1}>
-                    {''}
-                </Text>
-                <StatusBar style="auto" />
-                <ChatGPT textFromImage={extractedText} time={time}/>
-            </SafeAreaView>
-        );
+
+
+            <Text style={styles.text1}>
+                {''}
+            </Text>
+            <StatusBar style="auto" />
+            <ChatGPT textFromImage={extractedText} time={time} />
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -269,18 +282,29 @@ const styles = StyleSheet.create({
         borderRadius: 1000,
         width: 300
     },
-    scrollViewContainer: { 
-        alignItems: 'center', 
-        justifyContent: 'center', 
+    scrollViewContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    imageContainer: {
+        width: 150, 
+        height: 150,
+        marginBottom: 10,
+        marginTop: 10,
+        marginRight: 10,
+        marginLeft: 10,
+        backgroundColor: '#ccc', 
+        borderRadius: 10,
     },
     image: {
-        width: 200,
-        height: 150,
-        objectFit: "contain",
-        marginBottom: 10,
-        marginRight: 50
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        borderRadius: 10, 
     },
     scrollView: {
-        maxHeight: 150, // Adjust the maxHeight as needed
+        maxHeight: 150,
+        //marginLeft: 50,
+        //marginRight: 50,
     },
 });

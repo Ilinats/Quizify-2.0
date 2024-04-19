@@ -94,13 +94,13 @@ export default function TestDisplay() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 5,
+        padding: 3,
         backgroundColor: "#fdf1bc",
         paddingTop: 10,
     },
     scrollViewContent: {
         flexGrow: 1, // This enables scrolling for the content
-        justifyContent: 'center', // Optional: Align content in the center vertically
+        justifyContent: 'flex-start', // Optional: Align content in the center vertically
         paddingHorizontal: 10, // Optional: Add horizontal padding to the content
     },
     questionContainer: {

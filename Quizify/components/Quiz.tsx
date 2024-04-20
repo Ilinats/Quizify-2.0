@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, SafeAreaView } from 'react-native';
 import { globalVariable } from '@/globals';
 import { useNavigation } from 'expo-router';
 import Button from './Button';
@@ -133,14 +133,14 @@ const QuizComponent = () => {
                 );
             } else {
                 return (
-                    <View>
+                    <SafeAreaView style={styles.container}>
                         <Text style={styles.score}>Quiz Over</Text>
                         <Text style={styles.score}>Your Score: {score}</Text>
                         <View style={{ marginTop: 90, alignItems: 'center' }}>
                             <Button onPress={handlePress} text='Go Back' />
                         </View>
 
-                    </View>
+                    </SafeAreaView>
                 );
             }
         } else {
@@ -160,6 +160,15 @@ const QuizComponent = () => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        // marginTop: 465,
+        display: "flex",
+        alignItems: "center",
+        padding: 205,
+        // justifyContent: "space-evenly",
+        backgroundColor: "#fdf1bc",
+        height: "100%",
+    },
     button: {
         backgroundColor: '#fc7474',
         padding: 15,
